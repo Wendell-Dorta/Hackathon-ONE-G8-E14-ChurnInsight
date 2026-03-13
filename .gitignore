@@ -51,3 +51,5 @@ frontend/.env.*
 frontend/node_modules/
 frontend/.env
 frontend/.env.*
+
+scripts/clientes_seed.csv
