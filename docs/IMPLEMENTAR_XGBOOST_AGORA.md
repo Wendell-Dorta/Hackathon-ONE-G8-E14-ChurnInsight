@@ -301,18 +301,27 @@ files.download('modelo_xgboost.onnx')
 ```
 
 ```python
-# CÉLULA 10: Criar metadata.json
+# CÉLULA 10: Criar metadata.json (formato compatível com o backend Java)
 import json
 from google.colab import files
 
+# Separar features numéricas e categóricas (OBRIGATÓRIO para o backend)
+categorical_cols = ["gender", "country", "subscription_type", "device_type"]
+numeric_cols = [c for c in X.columns if c not in categorical_cols]
+
 metadata = {
-    "model_type": "XGBoost",
+    "name": "Spotify Churn Model",
     "version": "2.0",
+    "model_type": "XGBoost",
     "accuracy": float(auc),
-    "threshold": float(optimal_threshold),
-    "features": X.columns.tolist(),
+    "auc_roc": float(auc),
+    # IMPORTANTE: usar "threshold_otimo" (não "threshold") — campo lido pelo Java
+    "threshold_otimo": float(optimal_threshold),
+    # IMPORTANTE: separar em numeric_features e categorical_features
+    "numeric_features": numeric_cols,
+    "categorical_features": categorical_cols,
     "feature_importance": feature_importance.head(10).to_dict('records'),
-    "training_date": pd.Timestamp.now().isoformat(),
+    "export_date": pd.Timestamp.now().isoformat(),
     "n_samples_train": len(X_train_balanced),
     "n_samples_test": len(X_test)
 }
@@ -321,9 +330,9 @@ with open("metadata.json", "w") as f:
     json.dump(metadata, f, indent=2)
 
 print("✅ Metadata criado: metadata.json")
-files.download('metadata.json')
-
-print("✅ Metadata criado: metadata.json")
+print(f"   threshold_otimo: {optimal_threshold:.6f}")
+print(f"   numeric_features ({len(numeric_cols)}): {numeric_cols}")
+print(f"   categorical_features ({len(categorical_cols)}): {categorical_cols}")
 files.download('metadata.json')
 ```
 
