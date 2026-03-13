@@ -37,13 +37,21 @@ public class ModelMetadata implements ModelMetadataPort {
     @JsonProperty(value = "features")
     private List<String> features;
 
+    @JsonProperty(value = "numeric_features")
+    private List<String> numericFeatures;
+
+    @JsonProperty(value = "categorical_features")
+    private List<String> categoricalFeatures;
+
     // Métodos utilitários para manter compatibilidade com a interface ModelMetadataPort
     public List<String> getNumericFeatures() {
+        if (numericFeatures != null && !numericFeatures.isEmpty()) return numericFeatures;
         return features != null ? features : List.of();
     }
 
     public List<String> getCategoricalFeatures() {
-        return features != null ? features : List.of();
+        if (categoricalFeatures != null && !categoricalFeatures.isEmpty()) return categoricalFeatures;
+        return List.of();
     }
 
     /** Threshold genérico do modelo (campo extra do JSON). */

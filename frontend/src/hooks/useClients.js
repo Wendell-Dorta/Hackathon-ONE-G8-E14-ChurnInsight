@@ -35,7 +35,14 @@ export function useClients() {
       if (data.length === 0) {
         console.warn("⚠️ API retornou lista vazia. Tentando fallback local.");
         const fallback = await fetch("./clients.json");
-        if (fallback.ok) data = await fallback.json();
+        console.log("[Fallback] Status fetch ./clients.json:", fallback.status, fallback.statusText);
+        if (fallback.ok) {
+          const fallbackData = await fallback.json();
+          console.log("[Fallback] Dados carregados:", fallbackData);
+          data = fallbackData;
+        } else {
+          console.error("[Fallback] Falha ao carregar ./clients.json");
+        }
       }
 
       setClients(data);
@@ -45,7 +52,14 @@ export function useClients() {
       // Fallback de emergência
       try {
         const fallback = await fetch("./clients.json");
-        if (fallback.ok) setClients(await fallback.json());
+        console.log("[Fallback Emergência] Status fetch ./clients.json:", fallback.status, fallback.statusText);
+        if (fallback.ok) {
+          const fallbackData = await fallback.json();
+          console.log("[Fallback Emergência] Dados carregados:", fallbackData);
+          setClients(fallbackData);
+        } else {
+          console.error("[Fallback Emergência] Falha ao carregar ./clients.json");
+        }
       } catch (e) {
         setError(err.message);
       }

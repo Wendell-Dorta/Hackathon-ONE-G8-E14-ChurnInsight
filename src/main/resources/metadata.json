@@ -1,70 +1,31 @@
 {
-  "model_type": "XGBoost",
-  "version": "2.0",
-  "accuracy": 0.5108491987845313,
-  "threshold_otimo": 0.11009792238473892,
-  "features": [
-    "user_id",
-    "gender",
-    "age",
-    "country",
-    "subscription_type",
-    "listening_time",
-    "songs_played_per_day",
-    "skip_rate",
-    "device_type",
-    "ads_listened_per_week",
-    "offline_listening",
-    "engagement_score",
-    "frustration_index",
-    "premium_value",
-    "high_skip_low_time",
-    "free_heavy_ads",
-    "songs_per_hour"
-  ],
-  "feature_importance": [
-    {
-      "feature": "offline_listening",
-      "importance": 0.17797566950321198
-    },
-    {
-      "feature": "subscription_type",
-      "importance": 0.0867300033569336
-    },
-    {
-      "feature": "device_type",
-      "importance": 0.08583061397075653
-    },
-    {
-      "feature": "high_skip_low_time",
-      "importance": 0.07988704741001129
-    },
-    {
-      "feature": "gender",
-      "importance": 0.0696098655462265
-    },
-    {
-      "feature": "frustration_index",
-      "importance": 0.050954923033714294
-    },
-    {
-      "feature": "country",
-      "importance": 0.04896066337823868
-    },
-    {
-      "feature": "songs_per_hour",
-      "importance": 0.048457905650138855
-    },
-    {
-      "feature": "skip_rate",
-      "importance": 0.04673231020569801
-    },
-    {
-      "feature": "ads_listened_per_week",
-      "importance": 0.04589248448610306
-    }
-  ],
-  "training_date": "2026-03-13T21:11:42.989246",
-  "n_samples_train": 8537,
-  "n_samples_test": 1600
+    "name": "Spotify Churn Model",
+    "version": "1.0",
+    "model_type": "Logistic Regression with SMOTE",
+    "accuracy": 0.6488,
+    "recall": 0.3043,
+    "precision": 0.315,
+    "f1_score": 0.3096,
+    "auc_roc": 0.544,
+    "threshold_otimo": 0.262755,
+    "numeric_features": [
+        "age",
+        "listening_time",
+        "songs_played_per_day",
+        "skip_rate",
+        "ads_listened_per_week",
+        "offline_listening",
+        "songs_per_minute",
+        "ad_intensity",
+        "frustration_index",
+        "is_heavy_user",
+        "premium_no_offline"
+    ],
+    "categorical_features": [
+        "gender",
+        "country",
+        "subscription_type",
+        "device_type"
+    ],
+    "export_date": "2026-03-13 18:50:00"
 }
