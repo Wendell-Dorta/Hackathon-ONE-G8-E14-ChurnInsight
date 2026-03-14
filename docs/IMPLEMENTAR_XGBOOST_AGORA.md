@@ -109,6 +109,7 @@ def engineer_features(df):
 
 df = engineer_features(df)
 print(f"✅ Features criadas! Total: {len(df.columns)} features")
+print(f"   Colunas disponíveis: {df.columns.tolist()}")
 print(f"   Engineered: frustration_index, ad_intensity, songs_per_minute, is_heavy_user, premium_no_offline")
 ```
 
@@ -117,9 +118,20 @@ print(f"   Engineered: frustration_index, ad_intensity, songs_per_minute, is_hea
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 
+# Detectar coluna target automaticamente
+# Nomes comuns: 'churn', 'Churn', 'churned', 'target', 'label'
+target_candidates = ['churn', 'Churn', 'churned', 'target', 'label', 'cancelled']
+target_col = next((c for c in target_candidates if c in df.columns), None)
+
+if target_col is None:
+    print(f"❌ Coluna target não encontrada! Colunas disponíveis: {df.columns.tolist()}")
+    print("   Defina manualmente: target_col = 'nome_da_coluna'")
+else:
+    print(f"✅ Coluna target detectada: '{target_col}'")
+
 # Separar features e target
-X = df.drop('churn', axis=1)
-y = df['churn']
+X = df.drop(target_col, axis=1)
+y = df[target_col]
 
 # IMPORTANTE: Manter categóricas como STRING — o backend Java envia strings ao modelo
 # O pipeline sklearn vai fazer o OneHotEncoding internamente e exportar para ONNX
