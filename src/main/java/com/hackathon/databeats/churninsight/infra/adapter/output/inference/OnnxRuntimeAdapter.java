@@ -70,24 +70,40 @@ public class OnnxRuntimeAdapter implements InferencePort {
 
     /**
      * Modo flat tensor: XGBoost exportado com onnxmltools.
-     * Monta um único float[1][N] na ordem definida em feature_order do metadata.
+     * Detecta automaticamente se o modelo usa um único input "float_input" (tensor plano)
+     * ou inputs nomeados por feature (ex: "age", "gender", etc.).
      */
     private float[] predictFlatTensor(CustomerProfile profile, Map<String, Object> engineeredFeatures) {
         List<String> featureOrder = metadata.getFeatureOrder();
-        float[] flatInput = new float[featureOrder.size()];
-
-        // Mapa de todos os valores disponíveis
         Map<String, Object> allValues = buildAllValuesMap(profile, engineeredFeatures);
 
-        for (int i = 0; i < featureOrder.size(); i++) {
-            String feature = featureOrder.get(i);
-            Object val = allValues.get(feature);
-            flatInput[i] = toFloat(val, feature);
+        // Detecta o nome do primeiro input do modelo
+        String firstInputName;
+        try {
+            firstInputName = session.getInputInfo().keySet().iterator().next();
+        } catch (OrtException e) {
+            throw new ModelInferenceException("Erro ao ler inputs do modelo ONNX: " + e.getMessage(), e);
         }
 
+        if ("float_input".equals(firstInputName)) {
+            // Modelo exportado com tensor plano único
+            return predictWithSingleTensor(featureOrder, allValues);
+        } else {
+            // Modelo exportado com inputs nomeados por feature (onnxmltools preservou nomes do XGBoost)
+            return predictWithNamedFloatTensors(featureOrder, allValues, profile);
+        }
+    }
+
+    /**
+     * Envia um único tensor float[1][N] com todas as features na ordem do feature_order.
+     */
+    private float[] predictWithSingleTensor(List<String> featureOrder, Map<String, Object> allValues) {
+        float[] flatInput = new float[featureOrder.size()];
+        for (int i = 0; i < featureOrder.size(); i++) {
+            flatInput[i] = toFloat(allValues.get(featureOrder.get(i)), featureOrder.get(i));
+        }
         try (OnnxTensor tensor = OnnxTensor.createTensor(env, new float[][]{flatInput});
              OrtSession.Result result = session.run(Map.of("float_input", tensor))) {
-
             String outputName = findProbabilityOutputName(session.getOutputNames());
             OnnxValue probOutput = result.get(outputName)
                     .orElseThrow(() -> new ModelInferenceException("Output '" + outputName + "' não encontrado"));
@@ -95,6 +111,70 @@ public class OnnxRuntimeAdapter implements InferencePort {
         } catch (OrtException e) {
             throw new ModelInferenceException("Erro na inferência ONNX (flat tensor): " + e.getMessage(), e);
         }
+    }
+
+    /**
+     * Envia cada feature como tensor nomeado individualmente.
+     * Features numéricas → float[1][1], categóricas → String[1][1].
+     * Usado quando onnxmltools preserva os nomes das features do XGBoost no ONNX.
+     */
+    private float[] predictWithNamedFloatTensors(List<String> featureOrder, Map<String, Object> allValues, CustomerProfile profile) {
+        // Detecta quais inputs o modelo espera como string consultando o session
+        Set<String> stringInputs = new java.util.HashSet<>();
+        try {
+            session.getInputInfo().forEach((name, nodeInfo) -> {
+                var info = nodeInfo.getInfo();
+                if (info instanceof ai.onnxruntime.TensorInfo ti) {
+                    if (ti.type == ai.onnxruntime.OnnxJavaType.STRING) {
+                        stringInputs.add(name);
+                    }
+                }
+            });
+        } catch (OrtException e) {
+            // fallback: usa categorical_features do metadata
+            stringInputs.addAll(metadata.getCategoricalFeatures());
+        }
+
+        OnnxTensor[] tensors = new OnnxTensor[featureOrder.size()];
+        Map<String, OnnxTensor> inputs = new HashMap<>(featureOrder.size());
+        int tensorIndex = 0;
+        try {
+            for (String feature : featureOrder) {
+                if (stringInputs.contains(feature)) {
+                    // Enviar como string normalizada (valor original do perfil)
+                    String strVal = getCategoricalStringValue(feature, profile);
+                    tensors[tensorIndex] = OnnxTensor.createTensor(env, new String[][]{{strVal}});
+                } else {
+                    float val = toFloat(allValues.get(feature), feature);
+                    tensors[tensorIndex] = OnnxTensor.createTensor(env, new float[][]{{val}});
+                }
+                inputs.put(feature, tensors[tensorIndex++]);
+            }
+            try (OrtSession.Result result = session.run(inputs)) {
+                String outputName = findProbabilityOutputName(session.getOutputNames());
+                OnnxValue probOutput = result.get(outputName)
+                        .orElseThrow(() -> new ModelInferenceException("Output '" + outputName + "' não encontrado"));
+                return extractProbabilities(probOutput);
+            }
+        } catch (OrtException e) {
+            throw new ModelInferenceException("Erro na inferência ONNX (named tensors): " + e.getMessage(), e);
+        } finally {
+            for (int i = 0; i < tensorIndex; i++) {
+                if (tensors[i] != null) tensors[i].close();
+            }
+        }
+    }
+
+    /** Retorna o valor string normalizado de uma feature categórica do perfil. */
+    private String getCategoricalStringValue(String feature, CustomerProfile profile) {
+        String raw = switch (feature) {
+            case "gender" -> profile.gender();
+            case "country" -> profile.country();
+            case "subscription_type" -> profile.subscriptionType();
+            case "device_type" -> profile.deviceType();
+            default -> "";
+        };
+        return normalizeCategoricalValue(feature, raw);
     }
 
     /**
