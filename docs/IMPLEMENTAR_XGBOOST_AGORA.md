@@ -77,69 +77,89 @@ print(f"   Churn rate: {df['churn'].mean():.2%}")
 
 ```python
 # CÉLULA 4: Feature Engineering
+# IMPORTANTE: Estas features devem ser IDÊNTICAS às calculadas em ChurnBusinessRules.java
+# O backend Java calcula as mesmas fórmulas antes de enviar ao modelo ONNX
+
 def engineer_features(df):
-    # Engagement Score
-    df['engagement_score'] = (
-        df['listening_time'] / 1440 * 
-        (1 - df['skip_rate']) * 
-        df['songs_played_per_day']
-    )
-    
-    # Frustration Index
-    df['frustration_index'] = (
-        df['skip_rate'] * 0.4 +
-        df['ads_listened_per_week'] / 100 * 0.3 +
-        (1 - df['offline_listening']) * 0.3
-    )
-    
-    # Premium Value
-    df['premium_value'] = np.where(
-        df['subscription_type'].isin(['Premium', 'Family']),
-        df['listening_time'] * df['offline_listening'],
-        0
-    )
-    
-    # Risk Indicators
-    df['high_skip_low_time'] = (
-        (df['skip_rate'] > 0.5) & 
-        (df['listening_time'] < 200)
+    # frustration_index = skip_rate × (ads_listened_per_week + 1)
+    # Java: calculateFrustrationIndex()
+    df['frustration_index'] = df['skip_rate'] * (df['ads_listened_per_week'] + 1)
+
+    # ad_intensity = ads_per_week / ((songs_per_day × 7) + 1)
+    # Java: calculateAdIntensity()
+    df['ad_intensity'] = df['ads_listened_per_week'] / (df['songs_played_per_day'] * 7.0 + 1)
+
+    # songs_per_minute = songs_per_day / (listening_time + 1)
+    # Java: calculateSongsPerMinute()
+    df['songs_per_minute'] = df['songs_played_per_day'] / (df['listening_time'] + 1)
+
+    # is_heavy_user = listening_time > 450 AND skip_rate < 0.2
+    # Java: isHeavyUser()
+    df['is_heavy_user'] = (
+        (df['listening_time'] > 450) & (df['skip_rate'] < 0.2)
     ).astype(int)
-    
-    df['free_heavy_ads'] = (
-        (df['subscription_type'] == 'Free') & 
-        (df['ads_listened_per_week'] > 50)
+
+    # premium_no_offline = subscription_type != 'Free' AND offline_listening == False
+    # Java: isPremiumNoOffline()
+    df['premium_no_offline'] = (
+        (df['subscription_type'] != 'Free') & (df['offline_listening'] == 0)
     ).astype(int)
-    
-    # Behavioral Ratios
-    df['songs_per_hour'] = df['songs_played_per_day'] / (df['listening_time'] / 60 + 1e-6)
-    
+
     return df
 
 df = engineer_features(df)
 print(f"✅ Features criadas! Total: {len(df.columns)} features")
+print(f"   Engineered: frustration_index, ad_intensity, songs_per_minute, is_heavy_user, premium_no_offline")
 ```
 
 ```python
 # CÉLULA 5: Preparar dados
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
+
 # Separar features e target
 X = df.drop('churn', axis=1)
 y = df['churn']
 
-# Encoding de categóricas
-le_dict = {}
-for col in X.select_dtypes(include='object').columns:
-    le = LabelEncoder()
-    X[col] = le.fit_transform(X[col].astype(str))
-    le_dict[col] = le
+# IMPORTANTE: Manter categóricas como STRING — o backend Java envia strings ao modelo
+# O pipeline sklearn vai fazer o OneHotEncoding internamente e exportar para ONNX
+categorical_cols = ['gender', 'country', 'subscription_type', 'device_type']
+numeric_cols = [c for c in X.columns if c not in categorical_cols]
+
+print(f"✅ Features numéricas ({len(numeric_cols)}): {numeric_cols}")
+print(f"✅ Features categóricas ({len(categorical_cols)}): {categorical_cols}")
+
+# Garantir tipos corretos
+for col in numeric_cols:
+    X[col] = X[col].astype(float)
+for col in categorical_cols:
+    X[col] = X[col].astype(str)
 
 # Split
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42, stratify=y
 )
 
-# Balanceamento com SMOTE
+# SMOTE só funciona em dados numéricos — aplicar após encoding manual temporário
+from sklearn.preprocessing import LabelEncoder
+X_train_enc = X_train.copy()
+X_test_enc = X_test.copy()
+le_dict = {}
+for col in categorical_cols:
+    le = LabelEncoder()
+    X_train_enc[col] = le.fit_transform(X_train_enc[col])
+    X_test_enc[col] = le.transform(X_test_enc[col])
+    le_dict[col] = le
+
 smote = SMOTE(sampling_strategy=0.8, random_state=42)
-X_train_balanced, y_train_balanced = smote.fit_resample(X_train, y_train)
+X_train_balanced_enc, y_train_balanced = smote.fit_resample(X_train_enc, y_train)
+
+# Reverter encoding nas categóricas para manter strings no treino do pipeline
+X_train_balanced = X_train_balanced_enc.copy()
+for col in categorical_cols:
+    X_train_balanced[col] = le_dict[col].inverse_transform(
+        X_train_balanced_enc[col].astype(int)
+    )
 
 print(f"✅ Dados preparados:")
 print(f"   Train: {len(X_train_balanced)} (após SMOTE)")
@@ -148,34 +168,41 @@ print(f"   Features: {X_train.shape[1]}")
 ```
 
 ```python
-# CÉLULA 6: Treinar XGBoost
-print("🚀 Treinando XGBoost...")
+# CÉLULA 6: Treinar XGBoost com Pipeline sklearn
+# O pipeline inclui OneHotEncoder para categóricas — necessário para exportar ONNX
+# com inputs nomeados que o backend Java espera (gender, country, etc.)
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
 
-model = xgb.XGBClassifier(
-    n_estimators=300,
-    max_depth=6,
-    learning_rate=0.05,
-    subsample=0.8,
-    colsample_bytree=0.8,
-    scale_pos_weight=3,
-    random_state=42,
-    eval_metric='auc',
-    tree_method='hist'
-)
+print("🚀 Treinando XGBoost com pipeline...")
 
-model.fit(
-    X_train_balanced, 
-    y_train_balanced,
-    eval_set=[(X_test, y_test)],
-    verbose=10
-)
+preprocessor = ColumnTransformer(transformers=[
+    ('cat', OneHotEncoder(handle_unknown='ignore', sparse_output=False), categorical_cols)
+], remainder='passthrough')
 
-print("✅ Modelo treinado!")
+pipeline = Pipeline([
+    ('preprocessor', preprocessor),
+    ('classifier', xgb.XGBClassifier(
+        n_estimators=300,
+        max_depth=6,
+        learning_rate=0.05,
+        subsample=0.8,
+        colsample_bytree=0.8,
+        scale_pos_weight=3,
+        random_state=42,
+        eval_metric='auc',
+        tree_method='hist'
+    ))
+])
+
+pipeline.fit(X_train_balanced, y_train_balanced)
+print("✅ Pipeline treinado!")
 ```
 
 ```python
 # CÉLULA 7: Avaliar modelo
-y_pred_proba = model.predict_proba(X_test)[:, 1]
+y_pred_proba = pipeline.predict_proba(X_test)[:, 1]
 
 # Encontrar threshold ótimo
 from sklearn.metrics import precision_recall_curve, f1_score
@@ -203,99 +230,86 @@ print(confusion_matrix(y_test, y_pred))
 # CÉLULA 8: Feature Importance
 import matplotlib.pyplot as plt
 
+xgb_model = pipeline.named_steps['classifier']
 feature_importance = pd.DataFrame({
-    'feature': X.columns,
-    'importance': model.feature_importances_
+    'feature': numeric_cols,  # features numéricas (as categóricas foram expandidas pelo OHE)
+    'importance': xgb_model.feature_importances_[len(xgb_model.feature_importances_) - len(numeric_cols):]
 }).sort_values('importance', ascending=False).head(15)
 
 plt.figure(figsize=(10, 6))
 plt.barh(feature_importance['feature'], feature_importance['importance'])
 plt.xlabel('Importance')
-plt.title('Top 15 Features Mais Importantes')
+plt.title('Top Features Mais Importantes')
 plt.gca().invert_yaxis()
 plt.tight_layout()
 plt.show()
 
-print("\n🔝 Top 10 Features:")
-print(feature_importance.head(10).to_string(index=False))
+print("\n🔝 Top Features:")
+print(feature_importance.to_string(index=False))
 ```
 
 ```python
-# CÉLULA 9: Exportar para ONNX (CORRIGIDO v2!)
+# CÉLULA 9: Exportar Pipeline para ONNX
+# Usa skl2onnx para exportar o pipeline completo (preprocessor + XGBoost)
+# O modelo exportado terá inputs nomeados por feature — compatível com o backend Java
 
-# Instalar biblioteca correta para XGBoost
-!pip install onnxmltools onnxruntime -q
+!pip install skl2onnx onnxmltools onnxruntime -q
 
-import onnxmltools
-from onnxmltools.convert.common.data_types import FloatTensorType
+from skl2onnx import convert_sklearn
+from skl2onnx.common.data_types import FloatTensorType, StringTensorType
 import onnxruntime as rt
 
-print("💾 Exportando XGBoost para ONNX...")
+print("💾 Exportando pipeline para ONNX...")
 
-# IMPORTANTE: Retreinar modelo SEM feature names
-# XGBoost precisa usar índices numéricos para ONNX
-model_for_onnx = xgb.XGBClassifier(
-    n_estimators=300,
-    max_depth=6,
-    learning_rate=0.05,
-    subsample=0.8,
-    colsample_bytree=0.8,
-    scale_pos_weight=3,
-    random_state=42,
-    eval_metric='auc',
-    tree_method='hist'
+# Definir tipos de input: cada feature como tensor separado (shape [None, 1])
+# IMPORTANTE: a ordem deve ser categóricas primeiro, depois numéricas
+# (mesma ordem do ColumnTransformer: cat primeiro, remainder depois)
+initial_types = []
+for col in categorical_cols:
+    initial_types.append((col, StringTensorType([None, 1])))
+for col in numeric_cols:
+    initial_types.append((col, FloatTensorType([None, 1])))
+
+onx = convert_sklearn(
+    pipeline,
+    initial_types=initial_types,
+    target_opset=12,
+    options={id(pipeline.named_steps['classifier']): {'zipmap': False}}
 )
 
-# Treinar sem feature names (usa apenas arrays numpy)
-print("🔄 Retreinando modelo para ONNX...")
-model_for_onnx.fit(
-    X_train_balanced.values,  # .values remove feature names
-    y_train_balanced.values,
-    verbose=False
-)
-
-print("✅ Modelo retreinado")
-
-# Definir input shape
-initial_type = [('float_input', FloatTensorType([None, X_train.shape[1]]))]
-
-# Converter XGBoost para ONNX (usa onnxmltools, não skl2onnx!)
-onx = onnxmltools.convert_xgboost(
-    model_for_onnx, 
-    initial_types=initial_type,
-    target_opset=12
-)
-
-# Salvar
 with open("modelo_xgboost.onnx", "wb") as f:
     f.write(onx.SerializeToString())
 
 print("✅ Modelo exportado: modelo_xgboost.onnx")
 
-# Testar se funciona
+# Validar
 sess = rt.InferenceSession("modelo_xgboost.onnx")
-input_name = sess.get_inputs()[0].name
+print("\n📋 Inputs do modelo ONNX:")
+for inp in sess.get_inputs():
+    print(f"   {inp.name}: {inp.shape} ({inp.type})")
 
 # Teste com uma amostra
-test_sample = X_test.iloc[0:1].values.astype(np.float32)
-pred_onnx = sess.run(None, {input_name: test_sample})
+sample = X_test.iloc[0:1]
+onnx_inputs = {}
+for col in categorical_cols:
+    onnx_inputs[col] = sample[[col]].values.astype(str)
+for col in numeric_cols:
+    onnx_inputs[col] = sample[[col]].values.astype(np.float32)
 
-print(f"✅ Teste ONNX OK! Predição: {pred_onnx[1][0][1]:.4f}")
-
-# Comparar com modelo original
-pred_original = model.predict_proba(X_test.iloc[0:1])[:, 1][0]
-pred_onnx_value = pred_onnx[1][0][1]
-diff = abs(pred_original - pred_onnx_value)
+pred_onnx = sess.run(None, onnx_inputs)
+pred_pipeline = pipeline.predict_proba(sample)[:, 1][0]
+pred_onnx_val = pred_onnx[1][0][1] if pred_onnx[1].ndim > 1 else pred_onnx[1][0]
 
 print(f"\n📊 Validação:")
-print(f"   Predição Original: {pred_original:.4f}")
-print(f"   Predição ONNX:     {pred_onnx_value:.4f}")
-print(f"   Diferença:         {diff:.6f}")
+print(f"   Pipeline original: {pred_pipeline:.4f}")
+print(f"   ONNX:              {pred_onnx_val:.4f}")
+print(f"   Diferença:         {abs(pred_pipeline - pred_onnx_val):.6f}")
 
-if diff < 0.001:
-    print("   ✅ Modelos são equivalentes!")
+if abs(pred_pipeline - pred_onnx_val) < 0.001:
+    print("   ✅ Modelos equivalentes!")
+else:
+    print("   ⚠️ Diferença acima do esperado — verificar exportação")
 
-# Download
 from google.colab import files
 files.download('modelo_xgboost.onnx')
 ```
