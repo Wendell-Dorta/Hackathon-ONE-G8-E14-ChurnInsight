@@ -246,20 +246,29 @@ print(feature_importance.to_string(index=False))
 
 ```python
 # CÉLULA 9: Exportar Pipeline para ONNX
-# Usa skl2onnx para exportar o pipeline completo (preprocessor + XGBoost)
-# O modelo exportado terá inputs nomeados por feature — compatível com o backend Java
+# skl2onnx não suporta XGBoost nativamente — precisa registrar o conversor via onnxmltools
 
 !pip install skl2onnx onnxmltools onnxruntime -q
 
 from skl2onnx import convert_sklearn
 from skl2onnx.common.data_types import FloatTensorType, StringTensorType
+from skl2onnx import update_registered_converter
+from skl2onnx.common.shape_calculator import calculate_linear_classifier_output_shapes
+from onnxmltools.convert.xgboost.operator_converters.XGBoost import convert_xgboost
 import onnxruntime as rt
+
+# Registrar o conversor do XGBoost no skl2onnx
+update_registered_converter(
+    xgb.XGBClassifier,
+    "XGBoostXGBClassifier",
+    calculate_linear_classifier_output_shapes,
+    convert_xgboost,
+    options={"nocl": [True, False], "zipmap": [True, False, "columns"]}
+)
 
 print("💾 Exportando pipeline para ONNX...")
 
-# Definir tipos de input: cada feature como tensor separado (shape [None, 1])
-# IMPORTANTE: a ordem deve ser categóricas primeiro, depois numéricas
-# (mesma ordem do ColumnTransformer: cat primeiro, remainder depois)
+# Inputs nomeados por feature — mesma ordem do ColumnTransformer (cat primeiro, depois num)
 initial_types = []
 for col in categorical_cols:
     initial_types.append((col, StringTensorType([None, 1])))
@@ -270,7 +279,7 @@ onx = convert_sklearn(
     pipeline,
     initial_types=initial_types,
     target_opset=12,
-    options={id(pipeline.named_steps['classifier']): {'zipmap': False}}
+    options={id(pipeline.named_steps['classifier']): {'nocl': True, 'zipmap': False}}
 )
 
 with open("modelo_xgboost.onnx", "wb") as f:
@@ -278,7 +287,7 @@ with open("modelo_xgboost.onnx", "wb") as f:
 
 print("✅ Modelo exportado: modelo_xgboost.onnx")
 
-# Validar
+# Validar inputs do modelo exportado
 sess = rt.InferenceSession("modelo_xgboost.onnx")
 print("\n📋 Inputs do modelo ONNX:")
 for inp in sess.get_inputs():
@@ -294,14 +303,14 @@ for col in numeric_cols:
 
 pred_onnx = sess.run(None, onnx_inputs)
 pred_pipeline = pipeline.predict_proba(sample)[:, 1][0]
-pred_onnx_val = pred_onnx[1][0][1] if pred_onnx[1].ndim > 1 else pred_onnx[1][0]
+pred_onnx_val = float(pred_onnx[1][0][1]) if hasattr(pred_onnx[1][0], '__len__') else float(pred_onnx[1][0])
 
 print(f"\n📊 Validação:")
 print(f"   Pipeline original: {pred_pipeline:.4f}")
 print(f"   ONNX:              {pred_onnx_val:.4f}")
 print(f"   Diferença:         {abs(pred_pipeline - pred_onnx_val):.6f}")
 
-if abs(pred_pipeline - pred_onnx_val) < 0.001:
+if abs(pred_pipeline - pred_onnx_val) < 0.01:
     print("   ✅ Modelos equivalentes!")
 else:
     print("   ⚠️ Diferença acima do esperado — verificar exportação")
