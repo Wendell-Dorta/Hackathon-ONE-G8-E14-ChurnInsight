@@ -61,6 +61,94 @@ public class OnnxRuntimeAdapter implements InferencePort {
      */
     @Override
     public float[] predict(CustomerProfile profile, Map<String, Object> engineeredFeatures) {
+        // Detecta automaticamente o modo de inferência pelo metadata
+        if (metadata.isFlatTensorModel()) {
+            return predictFlatTensor(profile, engineeredFeatures);
+        }
+        return predictNamedInputs(profile, engineeredFeatures);
+    }
+
+    /**
+     * Modo flat tensor: XGBoost exportado com onnxmltools.
+     * Monta um único float[1][N] na ordem definida em feature_order do metadata.
+     */
+    private float[] predictFlatTensor(CustomerProfile profile, Map<String, Object> engineeredFeatures) {
+        List<String> featureOrder = metadata.getFeatureOrder();
+        float[] flatInput = new float[featureOrder.size()];
+
+        // Mapa de todos os valores disponíveis
+        Map<String, Object> allValues = buildAllValuesMap(profile, engineeredFeatures);
+
+        for (int i = 0; i < featureOrder.size(); i++) {
+            String feature = featureOrder.get(i);
+            Object val = allValues.get(feature);
+            flatInput[i] = toFloat(val, feature);
+        }
+
+        try (OnnxTensor tensor = OnnxTensor.createTensor(env, new float[][]{flatInput});
+             OrtSession.Result result = session.run(Map.of("float_input", tensor))) {
+
+            String outputName = findProbabilityOutputName(session.getOutputNames());
+            OnnxValue probOutput = result.get(outputName)
+                    .orElseThrow(() -> new ModelInferenceException("Output '" + outputName + "' não encontrado"));
+            return extractProbabilities(probOutput);
+        } catch (OrtException e) {
+            throw new ModelInferenceException("Erro na inferência ONNX (flat tensor): " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Constrói mapa com todos os valores do perfil + engineered features + categóricas encodadas.
+     */
+    private Map<String, Object> buildAllValuesMap(CustomerProfile profile, Map<String, Object> engineeredFeatures) {
+        Map<String, Object> values = new HashMap<>();
+
+        // Numéricas originais
+        values.put("age", safeFloat(profile.age()));
+        values.put("listening_time", (float) safeDouble(profile.listeningTime()));
+        values.put("songs_played_per_day", safeInt(profile.songsPlayedPerDay()));
+        values.put("skip_rate", (float) safeDouble(profile.skipRate()));
+        values.put("ads_listened_per_week", safeInt(profile.adsListenedPerWeek()));
+        values.put("offline_listening", (profile.offlineListening() != null && profile.offlineListening()) ? 1.0f : 0.0f);
+
+        // Engineered features
+        values.putAll(engineeredFeatures);
+
+        // Categóricas — encodadas com LabelEncoder (inteiros) via label_encodings do metadata
+        var labelEncodings = metadata.getLabelEncodings();
+        if (labelEncodings != null) {
+            encodeCategoric(values, "gender", profile.gender(), labelEncodings);
+            encodeCategoric(values, "country", profile.country(), labelEncodings);
+            encodeCategoric(values, "subscription_type", profile.subscriptionType(), labelEncodings);
+            encodeCategoric(values, "device_type", profile.deviceType(), labelEncodings);
+        }
+
+        return values;
+    }
+
+    private void encodeCategoric(Map<String, Object> values, String feature, String rawValue,
+                                  Map<String, Map<String, Integer>> labelEncodings) {
+        String normalized = normalizeCategoricalValue(feature, rawValue);
+        Map<String, Integer> encoding = labelEncodings.get(feature);
+        if (encoding != null) {
+            Integer encoded = encoding.get(normalized);
+            values.put(feature, encoded != null ? encoded.floatValue() : 0.0f);
+        } else {
+            values.put(feature, 0.0f);
+        }
+    }
+
+    private float toFloat(Object val, String featureName) {
+        if (val == null) return 0f;
+        if (val instanceof Boolean b) return b ? 1.0f : 0.0f;
+        if (val instanceof Number n) return n.floatValue();
+        return 0f;
+    }
+
+    /**
+     * Modo inputs nomeados: modelo Logistic Regression (sklearn com named tensors).
+     */
+    private float[] predictNamedInputs(CustomerProfile profile, Map<String, Object> engineeredFeatures) {
         // Usa array local para inputs (mais eficiente que HashMap em hot path)
         OnnxTensor[] tensors = new OnnxTensor[16]; // máximo de inputs esperados
         Map<String, OnnxTensor> inputs = new HashMap<>(16);

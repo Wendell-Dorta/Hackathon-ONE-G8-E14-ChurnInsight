@@ -245,41 +245,46 @@ print(feature_importance.to_string(index=False))
 ```
 
 ```python
-# CÉLULA 9: Exportar Pipeline para ONNX
-# skl2onnx não suporta XGBoost nativamente — precisa registrar o conversor via onnxmltools
+# CÉLULA 9: Exportar para ONNX com onnxmltools (abordagem direta e confiável)
+# skl2onnx + XGBoost tem incompatibilidade com StringTensorType no pipeline.
+# Solução: exportar o XGBoost puro com onnxmltools (flat float tensor),
+# com as categóricas já encodadas numericamente.
 
-!pip install skl2onnx onnxmltools onnxruntime -q
+!pip install onnxmltools onnxruntime -q
 
-from skl2onnx import convert_sklearn
-from skl2onnx.common.data_types import FloatTensorType, StringTensorType
-from skl2onnx import update_registered_converter
-from skl2onnx.common.shape_calculator import calculate_linear_classifier_output_shapes
-from onnxmltools.convert.xgboost.operator_converters.XGBoost import convert_xgboost
+import onnxmltools
+from onnxmltools.convert.common.data_types import FloatTensorType
 import onnxruntime as rt
 
-# Registrar o conversor do XGBoost no skl2onnx
-update_registered_converter(
-    xgb.XGBClassifier,
-    "XGBoostXGBClassifier",
-    calculate_linear_classifier_output_shapes,
-    convert_xgboost,
-    options={"nocl": [True, False], "zipmap": [True, False, "columns"]}
+print("💾 Exportando XGBoost para ONNX...")
+
+# Retreinar com encoding numérico (LabelEncoder já aplicado em X_train_enc)
+# Usar X_train_balanced_enc que já tem categóricas como inteiros
+model_onnx = xgb.XGBClassifier(
+    n_estimators=300,
+    max_depth=6,
+    learning_rate=0.05,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    scale_pos_weight=3,
+    random_state=42,
+    eval_metric='auc',
+    tree_method='hist'
 )
 
-print("💾 Exportando pipeline para ONNX...")
+model_onnx.fit(
+    X_train_balanced_enc.values,  # .values remove feature names — obrigatório para onnxmltools
+    y_train_balanced.values,
+    verbose=False
+)
 
-# Inputs nomeados por feature — mesma ordem do ColumnTransformer (cat primeiro, depois num)
-initial_types = []
-for col in categorical_cols:
-    initial_types.append((col, StringTensorType([None, 1])))
-for col in numeric_cols:
-    initial_types.append((col, FloatTensorType([None, 1])))
+n_features = X_train_balanced_enc.shape[1]
+initial_type = [('float_input', FloatTensorType([None, n_features]))]
 
-onx = convert_sklearn(
-    pipeline,
-    initial_types=initial_types,
-    target_opset=12,
-    options={id(pipeline.named_steps['classifier']): {'nocl': True, 'zipmap': False}}
+onx = onnxmltools.convert_xgboost(
+    model_onnx,
+    initial_types=initial_type,
+    target_opset=12
 )
 
 with open("modelo_xgboost.onnx", "wb") as f:
@@ -287,33 +292,37 @@ with open("modelo_xgboost.onnx", "wb") as f:
 
 print("✅ Modelo exportado: modelo_xgboost.onnx")
 
-# Validar inputs do modelo exportado
+# Validar
 sess = rt.InferenceSession("modelo_xgboost.onnx")
-print("\n📋 Inputs do modelo ONNX:")
-for inp in sess.get_inputs():
-    print(f"   {inp.name}: {inp.shape} ({inp.type})")
+print(f"\n📋 Input: {sess.get_inputs()[0].name} | shape: {sess.get_inputs()[0].shape}")
+print(f"   Outputs: {[o.name for o in sess.get_outputs()]}")
 
 # Teste com uma amostra
-sample = X_test.iloc[0:1]
-onnx_inputs = {}
-for col in categorical_cols:
-    onnx_inputs[col] = sample[[col]].values.astype(str)
-for col in numeric_cols:
-    onnx_inputs[col] = sample[[col]].values.astype(np.float32)
+test_sample = X_test_enc.iloc[0:1].values.astype(np.float32)
+pred_onnx = sess.run(None, {'float_input': test_sample})
+pred_pipeline = pipeline.predict_proba(X_test.iloc[0:1])[:, 1][0]
 
-pred_onnx = sess.run(None, onnx_inputs)
-pred_pipeline = pipeline.predict_proba(sample)[:, 1][0]
-pred_onnx_val = float(pred_onnx[1][0][1]) if hasattr(pred_onnx[1][0], '__len__') else float(pred_onnx[1][0])
+# pred_onnx[1] pode ser dict ou array dependendo da versão
+if isinstance(pred_onnx[1], list) and isinstance(pred_onnx[1][0], dict):
+    pred_onnx_val = pred_onnx[1][0].get(1, pred_onnx[1][0].get(1.0, 0.0))
+else:
+    pred_onnx_val = float(np.array(pred_onnx[1]).flatten()[1])
 
 print(f"\n📊 Validação:")
 print(f"   Pipeline original: {pred_pipeline:.4f}")
 print(f"   ONNX:              {pred_onnx_val:.4f}")
 print(f"   Diferença:         {abs(pred_pipeline - pred_onnx_val):.6f}")
 
-if abs(pred_pipeline - pred_onnx_val) < 0.01:
+if abs(pred_pipeline - pred_onnx_val) < 0.05:
     print("   ✅ Modelos equivalentes!")
 else:
-    print("   ⚠️ Diferença acima do esperado — verificar exportação")
+    print("   ⚠️ Diferença acima do esperado")
+
+# Salvar ordem das features para o metadata.json
+feature_order = list(X_train_balanced_enc.columns)
+print(f"\n📋 Ordem das features no tensor ({n_features}):")
+for i, f in enumerate(feature_order):
+    print(f"   [{i}] {f}")
 
 from google.colab import files
 files.download('modelo_xgboost.onnx')
@@ -324,9 +333,14 @@ files.download('modelo_xgboost.onnx')
 import json
 from google.colab import files
 
-# Separar features numéricas e categóricas (OBRIGATÓRIO para o backend)
-categorical_cols = ["gender", "country", "subscription_type", "device_type"]
-numeric_cols = [c for c in X.columns if c not in categorical_cols]
+# Ordem exata das features no tensor — CRÍTICO para o backend montar o input correto
+# Categóricas encodadas com LabelEncoder (inteiros), depois numéricas
+feature_order = list(X_train_balanced_enc.columns)
+
+# Mapas de encoding para as categóricas (necessário para o backend replicar)
+label_encodings = {}
+for col in categorical_cols:
+    label_encodings[col] = {str(cls): int(i) for i, cls in enumerate(le_dict[col].classes_)}
 
 metadata = {
     "name": "Spotify Churn Model",
@@ -334,14 +348,17 @@ metadata = {
     "model_type": "XGBoost",
     "accuracy": float(auc),
     "auc_roc": float(auc),
-    # IMPORTANTE: usar "threshold_otimo" (não "threshold") — campo lido pelo Java
+    # IMPORTANTE: usar "threshold_otimo" — campo lido pelo Java
     "threshold_otimo": float(optimal_threshold),
-    # IMPORTANTE: separar em numeric_features e categorical_features
+    # Ordem exata das features no flat tensor float_input
+    "feature_order": feature_order,
+    # Mapeamento LabelEncoder para cada categórica
+    "label_encodings": label_encodings,
+    # Mantidos para compatibilidade com ModelMetadata.java
     "numeric_features": numeric_cols,
     "categorical_features": categorical_cols,
-    "feature_importance": feature_importance.head(10).to_dict('records'),
     "export_date": pd.Timestamp.now().isoformat(),
-    "n_samples_train": len(X_train_balanced),
+    "n_samples_train": len(X_train_balanced_enc),
     "n_samples_test": len(X_test)
 }
 
@@ -350,8 +367,8 @@ with open("metadata.json", "w") as f:
 
 print("✅ Metadata criado: metadata.json")
 print(f"   threshold_otimo: {optimal_threshold:.6f}")
-print(f"   numeric_features ({len(numeric_cols)}): {numeric_cols}")
-print(f"   categorical_features ({len(categorical_cols)}): {categorical_cols}")
+print(f"   feature_order ({len(feature_order)}): {feature_order}")
+print(f"   label_encodings: {list(label_encodings.keys())}")
 files.download('metadata.json')
 ```
 

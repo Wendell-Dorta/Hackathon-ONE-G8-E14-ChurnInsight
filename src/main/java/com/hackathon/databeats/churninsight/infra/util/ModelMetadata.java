@@ -80,6 +80,25 @@ public class ModelMetadata implements ModelMetadataPort {
     @JsonProperty(value = "export_date")
     private String exportDate;
 
+    /**
+     * Ordem exata das features no flat tensor (modelo XGBoost exportado com onnxmltools).
+     * Presente apenas quando model_type = XGBoost.
+     */
+    @JsonProperty(value = "feature_order")
+    private List<String> featureOrder;
+
+    /**
+     * Mapeamento LabelEncoder para features categóricas.
+     * Ex: {"gender": {"Male": 1, "Female": 0, "Other": 2}}
+     */
+    @JsonProperty(value = "label_encodings")
+    private java.util.Map<String, java.util.Map<String, Integer>> labelEncodings;
+
+    /** Retorna true se o modelo usa flat tensor (XGBoost via onnxmltools). */
+    public boolean isFlatTensorModel() {
+        return featureOrder != null && !featureOrder.isEmpty();
+    }
+
     @Override
     public String getNomeModelo() {
         return this.name;
