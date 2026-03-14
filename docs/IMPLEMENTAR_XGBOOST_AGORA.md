@@ -46,33 +46,17 @@ import xgboost as xgb
 from imblearn.over_sampling import SMOTE
 
 # CÉLULA 3: Carregar seus dados
-# OPÇÃO A: Upload manual
-from google.colab import files
-uploaded = files.upload()  # Selecione seu CSV
-df = pd.read_csv(list(uploaded.keys())[0])
+# Dataset do projeto — direto do GitHub
+df = pd.read_csv('https://raw.githubusercontent.com/Equipe-14-DataBeats-Hackaton-NoCountry/Hackathon-ONE---Churn-clientes/main/spotify_churn_dataset.csv')
 
-# OPÇÃO B: Do GitHub/Drive
-# df = pd.read_csv('URL_DO_SEU_CSV')
-
-# OPÇÃO C: Dados sintéticos para teste
-np.random.seed(42)
-n = 10000
-df = pd.DataFrame({
-    'age': np.random.randint(18, 70, n),
-    'listening_time': np.random.exponential(300, n),
-    'songs_played_per_day': np.random.poisson(10, n),
-    'skip_rate': np.random.beta(2, 5, n),
-    'ads_listened_per_week': np.random.poisson(20, n),
-    'offline_listening': np.random.choice([0, 1], n, p=[0.6, 0.4]),
-    'subscription_type': np.random.choice(['Free', 'Premium', 'Student', 'Family'], n),
-    'device_type': np.random.choice(['Mobile', 'Desktop', 'Tablet'], n),
-    'gender': np.random.choice(['Male', 'Female'], n),
-    'country': np.random.choice(['BR', 'US', 'UK'], n),
-    'churn': np.random.choice([0, 1], n, p=[0.75, 0.25])
-})
+# OPÇÃO B: Upload manual de outro CSV
+# from google.colab import files
+# uploaded = files.upload()
+# df = pd.read_csv(list(uploaded.keys())[0])
 
 print(f"✅ Dados carregados: {len(df)} registros")
-print(f"   Churn rate: {df['churn'].mean():.2%}")
+print(f"   Colunas: {df.columns.tolist()}")
+print(f"   Churn rate: {df['is_churned'].mean():.2%}")
 ```
 
 ```python
@@ -120,7 +104,7 @@ from sklearn.preprocessing import OneHotEncoder
 
 # Detectar coluna target automaticamente
 # Nomes comuns: 'churn', 'Churn', 'churned', 'target', 'label'
-target_candidates = ['churn', 'Churn', 'churned', 'target', 'label', 'cancelled']
+target_candidates = ['is_churned', 'churn', 'Churn', 'churned', 'target', 'label', 'cancelled']
 target_col = next((c for c in target_candidates if c in df.columns), None)
 
 if target_col is None:
