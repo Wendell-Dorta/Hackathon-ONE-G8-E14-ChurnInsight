@@ -422,6 +422,9 @@ if auc_ensemble > auc:
 else:
     print(f"   ℹ️  XGBoost tuned é melhor — exportando ele.")
 ```
+
+```python
+# CÉLULA 8: Feature Importance
 import matplotlib.pyplot as plt
 
 feature_importance = pd.DataFrame({
