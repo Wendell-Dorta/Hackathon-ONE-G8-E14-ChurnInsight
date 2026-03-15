@@ -2,9 +2,9 @@
   "name": "Spotify Churn Model",
   "version": "2.0",
   "model_type": "XGBoost",
-  "accuracy": 0.6739043593932881,
-  "auc_roc": 0.6739043593932881,
-  "threshold_otimo": 0.45985525846481323,
+  "accuracy": 0.8166370266941712,
+  "auc_roc": 0.8166370266941712,
+  "threshold_otimo": 0.5538040399551392,
   "feature_order": [
     "gender",
     "age",
@@ -69,7 +69,7 @@
     "subscription_type",
     "device_type"
   ],
-  "export_date": "2026-03-15T01:53:58.216771",
-  "n_samples_train": 8000,
-  "n_samples_test": 2000
+  "export_date": "2026-03-15T21:27:04.475170",
+  "n_samples_train": 12000,
+  "n_samples_test": 3000
 }
