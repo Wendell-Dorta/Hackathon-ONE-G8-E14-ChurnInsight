@@ -1,6 +1,6 @@
 """
-Gera dataset sintético com correlações realistas de churn para streaming de música.
-Padrões baseados em literatura de churn prediction para serviços de assinatura.
+Gera dataset sintético com correlações fortes e realistas de churn para streaming de música.
+Versão 2.0 — correlações mais fortes, interações entre features, 15k registros.
 
 Uso: python scripts/gerar_dataset_realista.py
 Saída: scripts/spotify_churn_realista.csv
@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 
 np.random.seed(42)
-N = 10000
+N = 15000
 
 # --- Features base ---
 age = np.random.randint(16, 65, N)
@@ -21,60 +21,85 @@ subscription_type = np.random.choice(['Free', 'Premium', 'Family', 'Student'], N
                                       p=[0.40, 0.35, 0.15, 0.10])
 device_type = np.random.choice(['Mobile', 'Desktop', 'Web'], N, p=[0.55, 0.30, 0.15])
 
-# --- Features comportamentais com distribuições realistas ---
-listening_time = np.random.gamma(shape=3, scale=60, size=N).clip(10, 600)
-songs_played_per_day = np.random.gamma(shape=4, scale=12, size=N).clip(1, 150).astype(int)
-skip_rate = np.random.beta(2, 5, N)  # maioria tem skip_rate baixo
-ads_listened_per_week = np.where(
-    subscription_type == 'Free',
-    np.random.poisson(12, N),   # Free ouve mais anúncios
-    np.random.poisson(1, N)     # Premium quase nenhum
-).clip(0, 40)
-offline_listening = np.where(
-    subscription_type == 'Free',
-    np.random.binomial(1, 0.05, N),   # Free raramente usa offline
-    np.random.binomial(1, 0.45, N)    # Premium usa mais
+is_free = (subscription_type == 'Free')
+is_premium = (subscription_type == 'Premium')
+is_family = (subscription_type == 'Family')
+
+# --- Features comportamentais com distribuições por segmento ---
+# Usuários Free ouvem menos e pulam mais
+listening_time = np.where(
+    is_free,
+    np.random.gamma(2, 50, N).clip(10, 400),
+    np.random.gamma(4, 60, N).clip(30, 600)
 )
 
-# --- Calcular churn probability com correlações realistas ---
-# Cada fator contribui para a probabilidade de churn
+songs_played_per_day = np.where(
+    is_free,
+    np.random.gamma(3, 10, N).clip(1, 80).astype(int),
+    np.random.gamma(5, 12, N).clip(5, 150).astype(int)
+)
+
+skip_rate = np.where(
+    is_free,
+    np.random.beta(3, 4, N),    # Free: skip_rate mais alto
+    np.random.beta(2, 6, N)     # Premium: skip_rate mais baixo
+)
+
+ads_listened_per_week = np.where(
+    is_free,
+    np.random.poisson(15, N).clip(0, 50),
+    np.random.poisson(1, N).clip(0, 5)
+)
+
+offline_listening = np.where(
+    is_free,
+    np.random.binomial(1, 0.03, N),
+    np.where(is_family,
+             np.random.binomial(1, 0.60, N),
+             np.random.binomial(1, 0.45, N))
+)
+
+# --- Calcular churn com correlações fortes e interações ---
 logit = np.zeros(N)
 
-# Skip rate alto → mais churn (fator mais importante)
-logit += 4.0 * skip_rate
+# Skip rate alto → forte sinal de churn
+logit += 5.5 * skip_rate
 
-# Listening time baixo → mais churn
-logit += -0.008 * listening_time
+# Listening time baixo → churn
+logit += -0.012 * listening_time
 
-# Muitos anúncios → mais churn (especialmente Free)
-logit += 0.08 * ads_listened_per_week
+# Muitos anúncios → churn (efeito amplificado para Free)
+logit += 0.10 * ads_listened_per_week
+logit += np.where(is_free, 0.04 * ads_listened_per_week, 0)  # interação Free×ads
 
-# Plano Free → mais churn
-logit += np.where(subscription_type == 'Free', 1.2, 0.0)
+# Plano Free → mais churn base
+logit += np.where(is_free, 1.5, 0.0)
+logit += np.where(device_type == 'Web', 0.6, 0.0)
 
-# Sem offline → mais churn (para Premium)
-logit += np.where((subscription_type != 'Free') & (offline_listening == 0), 0.5, 0.0)
+# Premium sem offline → insatisfação
+logit += np.where(is_premium & (offline_listening == 0), 0.7, 0.0)
 
-# Poucas músicas por dia → mais churn
-logit += -0.015 * songs_played_per_day
+# Poucas músicas por dia → menos engajamento
+logit += -0.018 * songs_played_per_day
 
-# Jovens e idosos → levemente mais churn
-logit += 0.01 * np.abs(age - 30)
+# Interação: skip_rate alto + Free = muito mais churn
+logit += np.where(is_free & (skip_rate > 0.5), 1.2, 0.0)
 
-# Web → mais churn (menos engajamento)
-logit += np.where(device_type == 'Web', 0.4, 0.0)
+# Interação: listening_time baixo + muitos anúncios = churn quase certo
+logit += np.where((listening_time < 60) & (ads_listened_per_week > 10), 1.5, 0.0)
 
-# Intercepto para calibrar ~25% churn rate
-logit += -2.5
+# Heavy users raramente cancelam
+is_heavy = (listening_time > 400) & (skip_rate < 0.2)
+logit += np.where(is_heavy, -2.0, 0.0)
 
-# Converter para probabilidade
+# Intercepto para ~28% churn rate
+logit += -3.2
+
+# Probabilidade com ruído controlado (70% sinal, 30% ruído)
 prob_churn = 1 / (1 + np.exp(-logit))
-
-# Adicionar ruído realista (nem todo comportamento é previsível)
-prob_churn = prob_churn * 0.75 + np.random.uniform(0, 0.25, N)
+prob_churn = prob_churn * 0.70 + np.random.uniform(0, 0.30, N)
 prob_churn = prob_churn.clip(0, 1)
 
-# Gerar target
 is_churned = (np.random.uniform(0, 1, N) < prob_churn).astype(int)
 
 # --- Montar DataFrame ---
@@ -94,15 +119,15 @@ df = pd.DataFrame({
 })
 
 # --- Validar correlações ---
-print("✅ Dataset gerado com sucesso!")
+print("✅ Dataset v2.0 gerado!")
 print(f"   Total: {N} registros")
 print(f"   Churn rate: {is_churned.mean():.1%}")
 print()
-print("📊 Correlações com churn (devem ser significativas):")
+print("📊 Correlações com churn (quanto maior o diff%, melhor o sinal):")
 for col in ['skip_rate', 'listening_time', 'ads_listened_per_week', 'songs_played_per_day']:
     m1 = df[df['is_churned'] == 1][col].mean()
     m0 = df[df['is_churned'] == 0][col].mean()
-    diff_pct = abs(m1 - m0) / m0 * 100
+    diff_pct = abs(m1 - m0) / (m0 + 1e-9) * 100
     print(f"   {col:30s} churn={m1:.3f}  stay={m0:.3f}  diff={diff_pct:.1f}%")
 
 print()
@@ -112,4 +137,3 @@ print(df.groupby('subscription_type')['is_churned'].mean().round(3).to_string())
 output_path = 'scripts/spotify_churn_realista.csv'
 df.to_csv(output_path, index=False)
 print(f"\n💾 Salvo em: {output_path}")
-print(f"   Use este CSV no Colab para treinar o modelo.")

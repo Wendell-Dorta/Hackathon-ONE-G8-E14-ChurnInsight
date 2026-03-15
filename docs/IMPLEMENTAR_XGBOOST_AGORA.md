@@ -317,7 +317,111 @@ plt.show()
 ```
 
 ```python
-# CÉLULA 8: Feature Importance
+# CÉLULA 7C: Hyperparameter Tuning com Optuna (XGBoost)
+# Busca automática dos melhores parâmetros — pode ganhar 3-8% de AUC
+# Tempo estimado: 3-5 minutos no Colab
+!pip install optuna -q
+
+import optuna
+optuna.logging.set_verbosity(optuna.logging.WARNING)
+
+from sklearn.model_selection import cross_val_score
+
+print("🔍 Iniciando tuning com Optuna (50 trials)...")
+
+def objective(trial):
+    params = {
+        'n_estimators': trial.suggest_int('n_estimators', 100, 600),
+        'max_depth': trial.suggest_int('max_depth', 3, 8),
+        'learning_rate': trial.suggest_float('learning_rate', 0.01, 0.2, log=True),
+        'subsample': trial.suggest_float('subsample', 0.6, 1.0),
+        'colsample_bytree': trial.suggest_float('colsample_bytree', 0.6, 1.0),
+        'min_child_weight': trial.suggest_int('min_child_weight', 1, 10),
+        'gamma': trial.suggest_float('gamma', 0, 2),
+        'reg_alpha': trial.suggest_float('reg_alpha', 0, 1),
+        'reg_lambda': trial.suggest_float('reg_lambda', 0.5, 2),
+        'scale_pos_weight': spw,
+        'random_state': 42,
+        'eval_metric': 'auc',
+        'tree_method': 'hist',
+    }
+    model = xgb.XGBClassifier(**params)
+    scores = cross_val_score(model, X_train_enc, y_train,
+                             cv=3, scoring='roc_auc', n_jobs=-1)
+    return scores.mean()
+
+study = optuna.create_study(direction='maximize')
+study.optimize(objective, n_trials=50, show_progress_bar=True)
+
+best_params = study.best_params
+best_params['scale_pos_weight'] = spw
+best_params['random_state'] = 42
+best_params['eval_metric'] = 'auc'
+best_params['tree_method'] = 'hist'
+
+print(f"\n✅ Melhor AUC (CV): {study.best_value:.4f}")
+print(f"   Parâmetros: {best_params}")
+
+# Treinar modelo final com melhores parâmetros
+model_tuned = xgb.XGBClassifier(**best_params)
+model_tuned.fit(X_train_enc, y_train)
+
+proba_tuned = model_tuned.predict_proba(X_test_enc)[:, 1]
+auc_tuned = roc_auc_score(y_test, proba_tuned)
+
+prec, rec, thr = precision_recall_curve(y_test, proba_tuned)
+f1s = 2 * (prec * rec) / (prec + rec + 1e-6)
+best_thr_tuned = thr[np.argmax(f1s)]
+
+print(f"\n📊 XGBoost Tuned vs Original:")
+print(f"   Original:  AUC={auc:.4f}")
+print(f"   Tuned:     AUC={auc_tuned:.4f}  (+{(auc_tuned-auc)*100:.2f}%)")
+print(f"   Threshold: {best_thr_tuned:.4f}")
+
+# Usar modelo tuned nas próximas células
+if auc_tuned > auc:
+    model_xgb = model_tuned
+    auc = auc_tuned
+    optimal_threshold = best_thr_tuned
+    print("   ✅ Modelo tuned será usado para exportação!")
+else:
+    print("   ℹ️ Modelo original mantido (tuning não melhorou)")
+```
+
+```python
+# CÉLULA 7D: Ensemble dos top 3 modelos (bônus — geralmente +2-3% AUC)
+from sklearn.base import BaseEstimator, ClassifierMixin
+
+print("🎯 Testando ensemble dos top 3 modelos...")
+
+# Pegar os 3 melhores da comparação
+top3 = results_sorted[:3]
+top3_nomes = [r['Modelo'] for r in top3]
+top3_modelos = [r['objeto'] for r in top3]
+
+print(f"   Modelos: {top3_nomes}")
+
+# Média das probabilidades
+probas = np.array([m.predict_proba(X_test_enc)[:, 1] for m in top3_modelos])
+proba_ensemble = probas.mean(axis=0)
+auc_ensemble = roc_auc_score(y_test, proba_ensemble)
+
+prec, rec, thr = precision_recall_curve(y_test, proba_ensemble)
+f1s = 2 * (prec * rec) / (prec + rec + 1e-6)
+thr_ensemble = thr[np.argmax(f1s)]
+f1_ensemble = f1s.max()
+
+print(f"\n📊 Comparação final:")
+print(f"   XGBoost tuned:  AUC={auc:.4f}")
+print(f"   Ensemble top3:  AUC={auc_ensemble:.4f}  F1={f1_ensemble:.4f}")
+
+if auc_ensemble > auc:
+    print(f"   ✅ Ensemble é melhor! (+{(auc_ensemble-auc)*100:.2f}%)")
+    print(f"   ⚠️  Ensemble não pode ser exportado para ONNX diretamente.")
+    print(f"      Usando XGBoost tuned para exportação (AUC={auc:.4f})")
+else:
+    print(f"   ℹ️  XGBoost tuned é melhor — exportando ele.")
+```
 import matplotlib.pyplot as plt
 
 feature_importance = pd.DataFrame({
