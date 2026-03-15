@@ -46,18 +46,46 @@ export function ChurnDistributionChart({
     }],
   };
 
+  // Plugin inline para desenhar percentual + valor dentro de cada fatia
+  const sliceLabelPlugin = {
+    id: 'sliceLabels',
+    afterDatasetDraw(chart) {
+      const { ctx } = chart;
+      chart.data.datasets.forEach((dataset, datasetIndex) => {
+        const meta = chart.getDatasetMeta(datasetIndex);
+        meta.data.forEach((arc, index) => {
+          const value = dataset.data[index];
+          const pct = ((value / total) * 100).toFixed(1);
+          if (pct < 5) return; // não desenha em fatias muito pequenas
+
+          const { x, y } = arc.tooltipPosition();
+          ctx.save();
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 13px sans-serif';
+          ctx.fillText(`${pct}%`, x, y - 8);
+          ctx.font = '11px sans-serif';
+          ctx.fillStyle = 'rgba(255,255,255,0.75)';
+          ctx.fillText(value.toLocaleString('pt-BR'), x, y + 10);
+          ctx.restore();
+        });
+      });
+    },
+  };
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { 
+      legend: {
         position: 'bottom',
-        labels: { 
-          color: '#ffffff', 
+        labels: {
+          color: '#ffffff',
           usePointStyle: true,
-          padding: 40, 
-          font: { size: 12, weight: 'normal' } 
-        } 
+          padding: 40,
+          font: { size: 12, weight: 'normal' }
+        }
       },
       tooltip: {
         backgroundColor: '#191414',
@@ -68,7 +96,7 @@ export function ChurnDistributionChart({
           label: (context) => {
             const value = context.raw;
             const percentage = ((value / total) * 100).toFixed(1) + '%';
-            return `${context.label}: ${value} (${percentage})`;
+            return `${context.label}: ${value.toLocaleString('pt-BR')} (${percentage})`;
           }
         }
       }
@@ -78,7 +106,7 @@ export function ChurnDistributionChart({
 
   return (
     <div style={{ height: '350px', width: '100%', position: 'relative' }}>
-      <Pie data={chartData} options={options} />
+      <Pie data={chartData} options={options} plugins={[sliceLabelPlugin]} />
     </div>
   );
 }
