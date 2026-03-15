@@ -113,9 +113,16 @@ if target_col is None:
 else:
     print(f"✅ Coluna target detectada: '{target_col}'")
 
+# Remover colunas que não são features ANTES de separar X e y
+cols_to_drop = [c for c in ['user_id', 'id', 'customer_id'] if c in df.columns]
+if cols_to_drop:
+    df = df.drop(cols_to_drop, axis=1)
+    print(f"⚠️ Colunas removidas do df: {cols_to_drop}")
+
 # Separar features e target
 X = df.drop(target_col, axis=1)
 y = df[target_col]
+print(f"✅ Features após drop: {X.columns.tolist()}")
 
 # IMPORTANTE: Manter categóricas como STRING — o backend Java envia strings ao modelo
 # O pipeline sklearn vai fazer o OneHotEncoding internamente e exportar para ONNX
@@ -164,41 +171,43 @@ print(f"   Features: {X_train.shape[1]}")
 ```
 
 ```python
-# CÉLULA 6: Treinar XGBoost com Pipeline sklearn
-# O pipeline inclui OneHotEncoder para categóricas — necessário para exportar ONNX
-# com inputs nomeados que o backend Java espera (gender, country, etc.)
-from sklearn.pipeline import Pipeline
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder
+# CÉLULA 6: Treinar XGBoost diretamente (sem pipeline, sem SMOTE)
+# SMOTE prejudica modelos com pouco sinal — usar scale_pos_weight no lugar
+print("🚀 Treinando XGBoost...")
 
-print("🚀 Treinando XGBoost com pipeline...")
+# Calcular scale_pos_weight = negativos / positivos
+neg = (y_train == 0).sum()
+pos = (y_train == 1).sum()
+spw = neg / pos
+print(f"   scale_pos_weight: {spw:.2f} ({neg} negativos / {pos} positivos)")
 
-preprocessor = ColumnTransformer(transformers=[
-    ('cat', OneHotEncoder(handle_unknown='ignore', sparse_output=False), categorical_cols)
-], remainder='passthrough')
+# Usar X_train_enc (com LabelEncoder) diretamente — sem SMOTE
+model_xgb = xgb.XGBClassifier(
+    n_estimators=500,
+    max_depth=4,
+    learning_rate=0.03,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    min_child_weight=5,
+    gamma=1,
+    scale_pos_weight=spw,
+    random_state=42,
+    eval_metric='auc',
+    tree_method='hist',
+    early_stopping_rounds=30
+)
 
-pipeline = Pipeline([
-    ('preprocessor', preprocessor),
-    ('classifier', xgb.XGBClassifier(
-        n_estimators=300,
-        max_depth=6,
-        learning_rate=0.05,
-        subsample=0.8,
-        colsample_bytree=0.8,
-        scale_pos_weight=3,
-        random_state=42,
-        eval_metric='auc',
-        tree_method='hist'
-    ))
-])
-
-pipeline.fit(X_train_balanced, y_train_balanced)
-print("✅ Pipeline treinado!")
+model_xgb.fit(
+    X_train_enc, y_train,
+    eval_set=[(X_test_enc, y_test)],
+    verbose=False
+)
+print("✅ XGBoost treinado!")
 ```
 
 ```python
 # CÉLULA 7: Avaliar modelo
-y_pred_proba = pipeline.predict_proba(X_test)[:, 1]
+y_pred_proba = model_xgb.predict_proba(X_test_enc)[:, 1]
 
 # Encontrar threshold ótimo
 from sklearn.metrics import precision_recall_curve, f1_score
@@ -213,7 +222,7 @@ y_pred = (y_pred_proba >= optimal_threshold).astype(int)
 # Métricas
 auc = roc_auc_score(y_test, y_pred_proba)
 print(f"\n{'='*60}")
-print(f"📊 RESULTADOS")
+print(f"📊 RESULTADOS XGBoost")
 print(f"{'='*60}")
 print(f"AUC-ROC:   {auc:.4f} ({auc*100:.2f}%)")
 print(f"Threshold: {optimal_threshold:.4f}")
@@ -223,13 +232,97 @@ print(confusion_matrix(y_test, y_pred))
 ```
 
 ```python
+# CÉLULA 7B: Comparação de Modelos
+# Treina vários algoritmos e compara AUC — útil para escolher o melhor para exportar
+!pip install lightgbm -q
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline as SkPipeline
+import lightgbm as lgb
+import warnings
+warnings.filterwarnings('ignore')
+
+print("🔬 Comparando modelos...\n")
+
+results = []
+
+modelos = {
+    "Logistic Regression": LogisticRegression(max_iter=1000, class_weight='balanced', random_state=42),
+    "Random Forest": RandomForestClassifier(n_estimators=200, class_weight='balanced', random_state=42, n_jobs=-1),
+    "Gradient Boosting": GradientBoostingClassifier(n_estimators=200, max_depth=4, learning_rate=0.05, random_state=42),
+    "XGBoost": model_xgb,
+    "LightGBM": lgb.LGBMClassifier(n_estimators=300, max_depth=4, learning_rate=0.05,
+                                     scale_pos_weight=spw, random_state=42, verbose=-1),
+}
+
+for nome, modelo in modelos.items():
+    try:
+        if nome != "XGBoost":  # XGBoost já foi treinado
+            modelo.fit(X_train_enc, y_train)
+
+        proba = modelo.predict_proba(X_test_enc)[:, 1]
+        auc_m = roc_auc_score(y_test, proba)
+
+        # Threshold ótimo
+        prec, rec, thr = precision_recall_curve(y_test, proba)
+        f1s = 2 * (prec * rec) / (prec + rec + 1e-6)
+        best_thr = thr[np.argmax(f1s)]
+        y_p = (proba >= best_thr).astype(int)
+        f1 = f1_score(y_test, y_p)
+
+        results.append({"Modelo": nome, "AUC-ROC": auc_m, "F1": f1, "Threshold": best_thr, "objeto": modelo})
+        print(f"  ✅ {nome:25s} AUC={auc_m:.4f}  F1={f1:.4f}")
+    except Exception as e:
+        print(f"  ❌ {nome}: {e}")
+
+# Ordenar por AUC
+results_sorted = sorted(results, key=lambda x: x["AUC-ROC"], reverse=True)
+
+print(f"\n{'='*60}")
+print(f"🏆 RANKING FINAL")
+print(f"{'='*60}")
+for i, r in enumerate(results_sorted):
+    medal = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"][i]
+    print(f"  {medal} {r['Modelo']:25s} AUC={r['AUC-ROC']:.4f}  F1={r['F1']:.4f}")
+
+# Guardar o melhor modelo para exportação
+best = results_sorted[0]
+best_model = best["objeto"]
+best_auc = best["AUC-ROC"]
+best_threshold = best["Threshold"]
+best_nome = best["Modelo"]
+print(f"\n✅ Melhor modelo: {best_nome} (AUC={best_auc:.4f})")
+print(f"   Será usado para exportação ONNX nas próximas células.")
+
+# Gráfico comparativo
+import matplotlib.pyplot as plt
+nomes = [r["Modelo"] for r in results_sorted]
+aucs  = [r["AUC-ROC"] for r in results_sorted]
+
+plt.figure(figsize=(10, 5))
+bars = plt.barh(nomes, aucs, color=['gold','silver','#cd7f32','steelblue','steelblue'])
+plt.axvline(x=0.5, color='red', linestyle='--', label='Baseline (aleatório)')
+plt.xlabel('AUC-ROC')
+plt.title('Comparação de Modelos — AUC-ROC')
+plt.xlim(0.4, 1.0)
+for bar, val in zip(bars, aucs):
+    plt.text(val + 0.002, bar.get_y() + bar.get_height()/2,
+             f'{val:.4f}', va='center', fontsize=10)
+plt.legend()
+plt.tight_layout()
+plt.show()
+```
+
+```python
 # CÉLULA 8: Feature Importance
 import matplotlib.pyplot as plt
 
-xgb_model = pipeline.named_steps['classifier']
 feature_importance = pd.DataFrame({
-    'feature': numeric_cols,  # features numéricas (as categóricas foram expandidas pelo OHE)
-    'importance': xgb_model.feature_importances_[len(xgb_model.feature_importances_) - len(numeric_cols):]
+    'feature': list(X_train_enc.columns),
+    'importance': model_xgb.feature_importances_
 }).sort_values('importance', ascending=False).head(15)
 
 plt.figure(figsize=(10, 6))
@@ -258,27 +351,44 @@ import onnxruntime as rt
 
 print("💾 Exportando XGBoost para ONNX...")
 
-# Retreinar com encoding numérico (LabelEncoder já aplicado em X_train_enc)
-# Usar X_train_balanced_enc que já tem categóricas como inteiros
+# Usar o melhor modelo da comparação se for XGBoost, senão usar model_xgb
+import xgboost as xgb_module
+if isinstance(best_model, xgb_module.XGBClassifier):
+    modelo_para_exportar = best_model
+    auc = best_auc
+    optimal_threshold = best_threshold
+    print(f"✅ Exportando melhor modelo: {best_nome} (AUC={auc:.4f})")
+else:
+    modelo_para_exportar = model_xgb
+    print(f"⚠️ Melhor modelo ({best_nome}) não é XGBoost — exportando XGBoost mesmo assim.")
+    print(f"   (onnxmltools só suporta XGBoost para exportação direta)")
+
+# Garantir que user_id não está no dataset (drop defensivo)
+cols_to_exclude = [c for c in ['user_id', 'id', 'customer_id'] if c in X_train_enc.columns]
+if cols_to_exclude:
+    X_train_enc = X_train_enc.drop(cols_to_exclude, axis=1)
+    X_test_enc = X_test_enc.drop([c for c in cols_to_exclude if c in X_test_enc.columns], axis=1)
+    print(f"⚠️ Removido do tensor: {cols_to_exclude}")
+
+# Retreinar sem early_stopping para exportação limpa (onnxmltools não aceita early stopping)
+best_n = model_xgb.best_iteration + 1 if hasattr(model_xgb, 'best_iteration') and model_xgb.best_iteration else 300
 model_onnx = xgb.XGBClassifier(
-    n_estimators=300,
-    max_depth=6,
-    learning_rate=0.05,
+    n_estimators=best_n,
+    max_depth=4,
+    learning_rate=0.03,
     subsample=0.8,
     colsample_bytree=0.8,
-    scale_pos_weight=3,
+    min_child_weight=5,
+    gamma=1,
+    scale_pos_weight=spw,
     random_state=42,
     eval_metric='auc',
     tree_method='hist'
 )
 
-model_onnx.fit(
-    X_train_balanced_enc.values,  # .values remove feature names — obrigatório para onnxmltools
-    y_train_balanced.values,
-    verbose=False
-)
+model_onnx.fit(X_train_enc.values, y_train.values, verbose=False)
 
-n_features = X_train_balanced_enc.shape[1]
+n_features = X_train_enc.shape[1]
 initial_type = [('float_input', FloatTensorType([None, n_features]))]
 
 onx = onnxmltools.convert_xgboost(
@@ -299,27 +409,27 @@ print(f"   Outputs: {[o.name for o in sess.get_outputs()]}")
 
 # Teste com uma amostra
 test_sample = X_test_enc.iloc[0:1].values.astype(np.float32)
-pred_onnx = sess.run(None, {'float_input': test_sample})
-pred_pipeline = pipeline.predict_proba(X_test.iloc[0:1])[:, 1][0]
+input_name = sess.get_inputs()[0].name
+pred_onnx = sess.run(None, {input_name: test_sample})
+pred_direct = model_xgb.predict_proba(X_test_enc.iloc[0:1])[:, 1][0]
 
-# pred_onnx[1] pode ser dict ou array dependendo da versão
 if isinstance(pred_onnx[1], list) and isinstance(pred_onnx[1][0], dict):
     pred_onnx_val = pred_onnx[1][0].get(1, pred_onnx[1][0].get(1.0, 0.0))
 else:
     pred_onnx_val = float(np.array(pred_onnx[1]).flatten()[1])
 
 print(f"\n📊 Validação:")
-print(f"   Pipeline original: {pred_pipeline:.4f}")
-print(f"   ONNX:              {pred_onnx_val:.4f}")
-print(f"   Diferença:         {abs(pred_pipeline - pred_onnx_val):.6f}")
+print(f"   Modelo direto: {pred_direct:.4f}")
+print(f"   ONNX:          {pred_onnx_val:.4f}")
+print(f"   Diferença:     {abs(pred_direct - pred_onnx_val):.6f}")
 
-if abs(pred_pipeline - pred_onnx_val) < 0.05:
+if abs(pred_direct - pred_onnx_val) < 0.05:
     print("   ✅ Modelos equivalentes!")
 else:
     print("   ⚠️ Diferença acima do esperado")
 
 # Salvar ordem das features para o metadata.json
-feature_order = list(X_train_balanced_enc.columns)
+feature_order = list(X_train_enc.columns)
 print(f"\n📋 Ordem das features no tensor ({n_features}):")
 for i, f in enumerate(feature_order):
     print(f"   [{i}] {f}")
@@ -334,8 +444,7 @@ import json
 from google.colab import files
 
 # Ordem exata das features no tensor — CRÍTICO para o backend montar o input correto
-# Categóricas encodadas com LabelEncoder (inteiros), depois numéricas
-feature_order = list(X_train_balanced_enc.columns)
+feature_order = list(X_train_enc.columns)
 
 # Mapas de encoding para as categóricas (necessário para o backend replicar)
 label_encodings = {}
@@ -355,10 +464,10 @@ metadata = {
     # Mapeamento LabelEncoder para cada categórica
     "label_encodings": label_encodings,
     # Mantidos para compatibilidade com ModelMetadata.java
-    "numeric_features": numeric_cols,
+    "numeric_features": [c for c in feature_order if c not in categorical_cols],
     "categorical_features": categorical_cols,
     "export_date": pd.Timestamp.now().isoformat(),
-    "n_samples_train": len(X_train_balanced_enc),
+    "n_samples_train": len(X_train_enc),
     "n_samples_test": len(X_test)
 }
 
