@@ -151,16 +151,16 @@ curl -X POST http://localhost:10808/predict \
 Este projeto foi construído colaborativamente pela equipe:
 
 ### Time Back-End ☕
-- [**Wendell Dorta**](https://github.com/WendellD3v) — Desenvolvimento de endpoints, arquitetura e Docker
-- [**Ezandro Bueno**](https://github.com/ezbueno) — Adapters de infraestrutura e persistência
-- [**Jorge Filipi Dias**](https://github.com/jorgefilipi) — Validações e regras de domínio
-- [**Wanderson Souza**](https://github.com/wandersondevops) — Configuração de pipeline e observabilidade
+- [**Wendell Dorta**](https://github.com/WendellD3v)
+- [**Ezandro Bueno**](https://github.com/ezbueno)
+- [**Jorge Filipi Dias**](https://github.com/jorgefilipi)
+- [**Wanderson Souza**](https://github.com/wandersondevops)
 
 ### Time Data Science & Machine Learning 📊
-- [**André Ribeiro**](https://github.com/aluizr) — Modelagem preditiva e exportação ONNX
-- [**Kelly Muehlmann**](https://github.com/kellymuehlmann) — Análise exploratória e feature engineering
-- [**Luiz Alves**](https://github.com/lf-all) — Validação estatística e métricas de acurácia
-- [**Mariana Fernandes**](https://github.com/mari-martins-fernandes) — Preparação de datasets e balanceamento de classes
+- [**André Ribeiro**](https://github.com/aluizr)
+- [**Kelly Muehlmann**](https://github.com/kellymuehlmann)
+- [**Luiz Alves**](https://github.com/lf-all)
+- [**Mariana Fernandes**]([https://github.com/mari-martins-fernandes](https://github.com/marianafernandes2204))
 
 ---
 
