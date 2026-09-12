@@ -164,7 +164,8 @@ Este projeto foi construído colaborativamente pela equipe:
 
 ---
 
-## 🔗 Referências Originais e Evolução
+## 🔗 Referências Originais e Repositório Principal
 
-- **Organização Original do Hackathon**: [Equipe-14-DataBeats-Hackaton-NoCountry](https://github.com/Equipe-14-DataBeats-Hackaton-NoCountry)
-- **Status do Repositório**: Este monorepo mantém o registro fiel das contribuições originais da equipe e serve como base para futuras melhorias, refatorações e adições de features desenvolvidas individualmente por **Wendell Dorta**.
+- **Repositórios da Organização Original do Hackathon**: [Equipe-14-DataBeats-Hackaton-NoCountry (Repositórios)](https://github.com/orgs/Equipe-14-DataBeats-Hackaton-NoCountry/repositories)
+- **Repositório Monorepo no GitHub**: [Wendell-Dorta/Hackathon-ONE-G8-E14-ChurnInsight](https://github.com/Wendell-Dorta/Hackathon-ONE-G8-E14-ChurnInsight)
+- **Status e Evolução**: Este monorepo mantém o registro fiel das contribuições e histórico de commits originais da equipe DataBeats, servindo como base consolidada para futuras evoluções técnicas, refatorações e adições de features desenvolvidas individualmente por **Wendell Dorta**.
