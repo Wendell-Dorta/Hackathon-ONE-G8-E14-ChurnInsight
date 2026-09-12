@@ -1,0 +1,13 @@
+{
+  "user_id": "user-loyal-001",
+  "gender": "Female",
+  "age": 35,
+  "country": "US",
+  "subscription_type": "Premium",
+  "listening_time": 580.0,
+  "songs_played_per_day": 45,
+  "skip_rate": 0.08,
+  "ads_listened_per_week": 0,
+  "device_type": "Desktop",
+  "offline_listening": true
+}

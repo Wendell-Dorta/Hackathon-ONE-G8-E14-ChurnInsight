@@ -1,0 +1,225 @@
+version: '3.8'
+services:
+  # ============================================================================
+  # DATABASE (MySQL 8.0)
+  # ============================================================================
+  db:
+    image: mysql:8.0
+    container_name: churn-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-churn_db}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_password}
+      MYSQL_USER: ${DB_USER:-user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-password}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --performance-schema=OFF
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_dev_data:/var/lib/mysql
+    networks:
+      - churn-net
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================================
+  # API BACKEND (Spring Boot) - Build local in dev
+  # ============================================================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: churn-api
+    restart: on-failure
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "10808:8080"
+    env_file:
+      - .env
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/${DB_NAME:-churn_db}?allowPublicKeyRetrieval=true&useSSL=false&rewriteBatchedStatements=true&cachePrepStmts=true&prepStmtCacheSize=250&useServerPrepStmts=true
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:-user}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-password}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SERVER_PORT: ${APP_PORT:-10808}
+      APP_PORT: ${APP_PORT:-10808}
+      RETENTION_PRIORITY_HIGH_THRESHOLD: ${RETENTION_PRIORITY_HIGH_THRESHOLD:-6.0}
+      RETENTION_PRIORITY_MEDIUM_THRESHOLD: ${RETENTION_PRIORITY_MEDIUM_THRESHOLD:-3.0}
+      JAVA_OPTS: "-Xmx1g -Xms512m"
+      APP_CORS_ALLOWED_ORIGINS: "http://localhost:3000,http://localhost:5173"
+      CORS_ALLOWED_ORIGINS: "http://localhost:3000,http://localhost:5173"
+      APP_SECURITY_ALLOW_UNAUTHENTICATED_PREDICT: "true"
+    networks:
+      - churn-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:${APP_PORT:-10808}/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ============================================================================
+  # FRONTEND (React + Nginx) - Build local in dev
+  # ============================================================================
+  frontend:
+    build:
+      context: ../Hackathon_ONE_Front-End
+      dockerfile: Dockerfile
+    container_name: churn-frontend
+    restart: on-failure
+    depends_on:
+      - app
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_BASE_URL=/api
+    networks:
+      - churn-net
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  # ============================================================================
+  # Optional infra and monitoring (same as prod compose) - keep for local dev if needed
+  # ============================================================================
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30 --cleanup
+    environment:
+      - DOCKER_API_VERSION=1.45
+    networks:
+      - churn-net
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: monitoring-prometheus
+    entrypoint:
+      - /bin/sh
+      - -ec
+      - sed -e "s|__PROM_SCRAPE_USER__|$$PROM_SCRAPE_USER|g" -e "s|__PROM_SCRAPE_PASSWORD__|$$PROM_SCRAPE_PASSWORD|g" -e "s|__APP_PORT__|$${PROM_TARGET_PORT:-10808}|g" /etc/prometheus/prometheus.yml > /tmp/prometheus.yml && exec /bin/prometheus --config.file=/tmp/prometheus.yml --storage.tsdb.path=/prometheus --web.console.libraries=/usr/share/prometheus/console_libraries --web.console.templates=/usr/share/prometheus/consoles
+    env_file:
+      - .env
+    environment:
+      PROM_SCRAPE_USER: ${SECURITY_USER:-admin}
+      PROM_SCRAPE_PASSWORD: ${SECURITY_PASSWORD:-admin}
+      PROM_TARGET_PORT: ${APP_PORT:-10808}
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "127.0.0.1:${PROMETHEUS_PORT:-9090}:${PROMETHEUS_PORT:-9090}"
+    networks:
+      - churn-net
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: monitoring-grafana
+    ports:
+      - "127.0.0.1:${GRAFANA_PORT:-3001}:${GRAFANA_PORT:-3001}"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_ADMIN_PASSWORD:-admin}
+      - GF_INSTALL_PLUGINS=alexanderzobnin-zabbix-app
+      - ZABBIX_USER=${ZABBIX_USER:-zabbix}
+      - ZABBIX_PASSWORD=${ZABBIX_PASSWORD:-zabbix}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+    networks:
+      - churn-net
+
+  zabbix-server:
+    image: zabbix/zabbix-server-mysql:latest
+    container_name: zabbix-server
+    ports:
+      - "${ZABBIX_SERVER_PORT:-10051}:${ZABBIX_SERVER_PORT:-10051}"
+    environment:
+      - DB_SERVER_HOST=zabbix-db
+      - MYSQL_USER=zabbix
+      - MYSQL_PASSWORD=${MYSQL_ZABBIX_PASSWORD:-zabbix}
+      - MYSQL_DATABASE=zabbix
+    depends_on:
+      - zabbix-db
+    networks:
+      - churn-net
+
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-mysql:latest
+    container_name: zabbix-web
+    restart: always
+    ports:
+      - "127.0.0.1:${ZABBIX_WEB_PORT:-8081}:8080"
+    environment:
+      - DB_SERVER_HOST=zabbix-db
+      - MYSQL_USER=zabbix
+      - MYSQL_PASSWORD=${ZABBIX_DB_PASSWORD:-zabbix}
+      - MYSQL_DATABASE=zabbix
+      - ZBX_SERVER_HOST=zabbix-server
+      - PHP_TZ=America/Sao_Paulo
+    depends_on:
+      - zabbix-server
+    networks:
+      - churn-net
+
+  zabbix-db:
+    image: mysql:8.0
+    container_name: zabbix-db
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_bin
+      - --default-authentication-plugin=mysql_native_password
+      - --log_bin_trust_function_creators=1
+    environment:
+      - MYSQL_USER=zabbix
+      - MYSQL_PASSWORD=${ZABBIX_DB_PASSWORD:-zabbix}
+      - MYSQL_DATABASE=zabbix
+      - MYSQL_ROOT_PASSWORD=${ZABBIX_DB_ROOT_PASSWORD:-root}
+    volumes:
+      - zabbix_db_data:/var/lib/mysql
+    networks:
+      - churn-net
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflare-tunnel
+    restart: unless-stopped
+    command: tunnel --url http://churn-frontend:3000 --metrics 0.0.0.0:2000
+    networks:
+      - churn-net
+    depends_on:
+      - frontend
+
+networks:
+  churn-net:
+    driver: bridge
+
+volumes:
+  mysql_dev_data:
+  mysql_data:
+  zabbix_db_data:
+  grafana_data:
+
+secrets:
+  db_root_password:
+    file: ./secrets/db_root_password.txt
+  db_password:
+    file: ./secrets/db_password.txt
+  gf_admin_password:
+    file: ./secrets/grafana_admin_password.txt
+  app_security_password:
+    file: ./secrets/app_security_password.txt
+  zabbix_db_password:
+    file: ./secrets/zabbix_db_password.txt

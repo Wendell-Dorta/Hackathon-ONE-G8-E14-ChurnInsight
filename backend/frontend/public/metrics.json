@@ -1,0 +1,36 @@
+{
+    "totalCustomers": 8000,
+    "churnRate": 0.2587,
+    "recall": 0.5,
+    "auc": 0.5024,
+    "churnDistribution": [
+        5930,
+        2070
+    ],
+    "featureImportance": [
+        {
+            "name": "Anúncios por Semana",
+            "value": 0.1705
+        },
+        {
+            "name": "Uso Offline",
+            "value": 0.1217
+        },
+        {
+            "name": "Gênero",
+            "value": 0.077
+        },
+        {
+            "name": "Tipo de Dispositivo",
+            "value": 0.0687
+        },
+        {
+            "name": "Intensidade de Anúncios",
+            "value": 0.0623
+        },
+        {
+            "name": "Índice de Frustração",
+            "value": 0.0585
+        }
+    ]
+}

@@ -1,0 +1,47 @@
+name: Verificacao de Qualidade e Seguranca
+
+on:
+  push:
+    branches: [ "feature/*", "develop" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test-and-security:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      # 1. Análise de Dependências (SCA) - Busca CVEs nas libs do pom.xml
+      - name: Check de Vulnerabilidades (OWASP Dependency Check)
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'ChurnInsight'
+          path: '.'
+          format: 'HTML'
+          out: 'reports'
+          # Falha se encontrar risco Alto ou Crítico (CVSS > 7.0)
+          failOnCVSS: 7.0
+
+      # 2. Testes Unitários
+      - name: Executar Testes Unitarios
+        run: mvn test
+
+      # 3. Scan de Segredos e Código Estático (SAST) - Usando Trivy
+      - name: Scan de Filesystem (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          ignore-unfixed: true
+          format: 'table'
+          severity: 'CRITICAL,HIGH'

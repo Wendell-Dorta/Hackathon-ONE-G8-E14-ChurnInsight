@@ -1,0 +1,49 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules
+
+# Environment variables
+.env
+.env.*
+
+# Build
+dist
+dist-ssr
+build
+
+# Local env files
+*.local
+.env
+.env.local
+.env.*.local
+.env.*
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Arquivos que não devem ir para produção
+*.pkl
+frontend/**/*.onnx
+*.ipynb
+
+# Cache
+.cache
+.parcel-cache
+*.py[cod]
+*$py.class

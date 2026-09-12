@@ -1,0 +1,27 @@
+fix: corrige card "Receita Potencial em Risco" vazio no dashboard
+
+Corrige problema onde o card de receita em risco não exibia valores.
+
+Alterações no Backend:
+- Otimiza query SQL em PredictionHistoryRepository com ORDER BY e alias explícito
+- Adiciona proteção contra lista vazia em DashboardMetricsService
+- Retorna 0.0 quando não há dados ao invés de causar erro
+
+Alterações no Frontend:
+- Remove return duplicado em useData.js que impedia retorno de fallbackActive
+- Corrige exibição do warning de fallback
+
+Documentação:
+- Adiciona guia de solução rápida (SOLUCAO_RAPIDA.md)
+- Adiciona diagnóstico detalhado (DIAGNOSTICO_RECEITA_EM_RISCO.md)
+- Adiciona resumo de correções (RESUMO_CORRECOES_RECEITA.md)
+- Adiciona script SQL de teste (SQL_TESTE_RECEITA_EM_RISCO.sql)
+- Adiciona script de dados de teste (DADOS_TESTE_RECEITA.sql)
+- Adiciona README consolidado (README_CORRECAO_RECEITA.md)
+
+Arquivos modificados:
+- src/main/java/com/hackathon/databeats/churninsight/infra/adapter/output/persistence/repository/PredictionHistoryRepository.java
+- src/main/java/com/hackathon/databeats/churninsight/application/service/DashboardMetricsService.java
+- frontend/src/hooks/useData.js
+
+Closes #[número-da-issue]

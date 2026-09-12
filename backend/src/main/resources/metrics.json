@@ -1,0 +1,36 @@
+{
+    "totalCustomers": 1600,
+    "churnRate": 0.2587,
+    "recall": 0.3043,
+    "auc": 0.544,
+    "churnDistribution": [
+        1186,
+        414
+    ],
+    "featureImportance": [
+        {
+            "name": "subscription_type",
+            "value": 0.1776
+        },
+        {
+            "name": "Anúncios por Semana",
+            "value": 0.1358
+        },
+        {
+            "name": "songs_played_per_day",
+            "value": 0.1004
+        },
+        {
+            "name": "Uso Offline",
+            "value": 0.0935
+        },
+        {
+            "name": "Tempo de Escuta",
+            "value": 0.0877
+        },
+        {
+            "name": "songs_per_minute",
+            "value": 0.0824
+        }
+    ]
+}

@@ -1,0 +1,13 @@
+node_modules
+dist
+.git
+.gitignore
+*.md
+*.ipynb
+*.pkl
+*.onnx
+.env
+.env.example
+.env.local
+.env.*.local
+.env.*

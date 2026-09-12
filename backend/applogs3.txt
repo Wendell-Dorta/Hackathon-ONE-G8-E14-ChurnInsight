@@ -1,0 +1,20 @@
+churn-api  | 	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165) ~[tomcat-embed-core-10.1.50.jar!/:na]
+churn-api  | 	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:88) ~[tomcat-embed-core-10.1.50.jar!/:na]
+churn-api  | 	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.50.jar!/:na]
+churn-api  | 	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113) ~[tomcat-embed-core-10.1.50.jar!/:na]
+churn-api  | 	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83) ~[tomcat-embed-core-10.1.50.jar!/:na]
+churn-api  | 	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72) ~[tomcat-embed-core-10.1.50.jar!/:na]
+churn-api  | 	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342) ~[tomcat-embed-core-10.1.50.jar!/:na]
+churn-api  | 	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399) ~[tomcat-embed-core-10.1.50.jar!/:na]
+churn-api  | 	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.50.jar!/:na]
+churn-api  | 	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-10.1.50.jar!/:na]
+churn-api  | 	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1774) ~[tomcat-embed-core-10.1.50.jar!/:na]
+churn-api  | 	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.50.jar!/:na]
+churn-api  | 	at java.base/java.lang.VirtualThread.run(Unknown Source) ~[na:na]
+churn-api  | 
+churn-api  | 2026-03-13T22:29:27.076Z ERROR 7 --- [mcat-handler-96] c.h.d.c.a.s.ChurnPredictionService       : Erro ao executar predição: Erro na inferência: Cannot invoke "java.util.List.iterator()" because the return value of "com.hackathon.databeats.churninsight.infra.util.ModelMetadata.getCategoricalFeatures()" is null
+churn-api  | 2026-03-13T22:29:27.080Z  WARN 7 --- [mcat-handler-96] c.h.d.c.i.e.GlobalExceptionHandler       : Erro de negócio na predição: Falha na execução da predição: Erro na inferência: Cannot invoke "java.util.List.iterator()" because the return value of "com.hackathon.databeats.churninsight.infra.util.ModelMetadata.getCategoricalFeatures()" is null
+churn-api  | 2026-03-13T22:29:42.011Z ERROR 7 --- [cat-handler-100] c.h.d.c.a.s.ChurnPredictionService       : Erro ao executar predição: Erro na inferência: Cannot invoke "java.util.List.iterator()" because the return value of "com.hackathon.databeats.churninsight.infra.util.ModelMetadata.getCategoricalFeatures()" is null
+churn-api  | 2026-03-13T22:29:42.011Z  WARN 7 --- [cat-handler-100] c.h.d.c.i.e.GlobalExceptionHandler       : Erro de negócio na predição: Falha na execução da predição: Erro na inferência: Cannot invoke "java.util.List.iterator()" because the return value of "com.hackathon.databeats.churninsight.infra.util.ModelMetadata.getCategoricalFeatures()" is null
+churn-api  | 2026-03-13T22:30:47.866Z ERROR 7 --- [cat-handler-110] c.h.d.c.a.s.ChurnPredictionService       : Erro ao executar predição: Erro na inferência: Cannot invoke "java.util.List.iterator()" because the return value of "com.hackathon.databeats.churninsight.infra.util.ModelMetadata.getCategoricalFeatures()" is null
+churn-api  | 2026-03-13T22:30:47.867Z  WARN 7 --- [cat-handler-110] c.h.d.c.i.e.GlobalExceptionHandler       : Erro de negócio na predição: Falha na execução da predição: Erro na inferência: Cannot invoke "java.util.List.iterator()" because the return value of "com.hackathon.databeats.churninsight.infra.util.ModelMetadata.getCategoricalFeatures()" is null

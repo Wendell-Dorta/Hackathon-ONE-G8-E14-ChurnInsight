@@ -1,0 +1,35 @@
+# Git e IDEs
+.git
+.gitignore
+.idea
+.vscode
+*.iml
+
+# Build local
+target/
+build/
+out/
+
+# Arquivos temporários e logs
+*.log
+logs/
+temp/
+
+# Documentação pesada
+docs/
+*.md
+
+# Arquivos de configuração do Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Arquivo de variáveis de ambiente
+.env
+
+# Configurações específicas do ambiente de desenvolvimento
+src/main/resources/application-dev.properties
+
+# exemplos de predição
+example-predict-request-cancelar.json
+example-predict-request.json

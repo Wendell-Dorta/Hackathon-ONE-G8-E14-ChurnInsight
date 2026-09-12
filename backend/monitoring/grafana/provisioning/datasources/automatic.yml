@@ -1,0 +1,21 @@
+apiVersion: 1
+
+datasources:
+  # 1. Configura o Prometheus automaticamente
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: true
+
+  # 2. Configura o Zabbix automaticamente
+  - name: Zabbix
+    type: alexanderzobnin-zabbix-datasource
+    access: proxy
+    url: http://zabbix-web:8080/api_jsonrpc.php
+    jsonData:
+      trends: true
+    user: ${ZABBIX_USER}
+    secureJsonData:
+      password: ${ZABBIX_PASSWORD}

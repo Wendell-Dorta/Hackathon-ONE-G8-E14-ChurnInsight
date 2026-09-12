@@ -1,0 +1,769 @@
+churn-api  | 
+churn-api  |   .   ____          _            __ _ _
+churn-api  |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+churn-api  | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+churn-api  |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+churn-api  |   '  |____| .__|_| |_|_| |_\__, | / / / /
+churn-api  |  =========|_|==============|___/=/_/_/_/
+churn-api  | 
+churn-api  |  :: Spring Boot ::                (v3.5.9)
+churn-api  | 
+churn-api  | 2026-03-13T22:03:24.798Z  INFO 7 --- [           main] c.h.d.c.ChurnInsightApplication          : Starting ChurnInsightApplication v0.0.1-SNAPSHOT using Java 21.0.10 with PID 7 (/app/app.jar started by appuser in /app)
+churn-api  | 2026-03-13T22:03:24.804Z  INFO 7 --- [           main] c.h.d.c.ChurnInsightApplication          : No active profile set, falling back to 1 default profile: "default"
+churn-api  | 2026-03-13T22:03:27.410Z  INFO 7 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+churn-api  | 2026-03-13T22:03:27.535Z  INFO 7 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 104 ms. Found 4 JPA repository interfaces.
+churn-api  | 2026-03-13T22:03:29.307Z  INFO 7 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 10808 (http)
+churn-api  | 2026-03-13T22:03:29.341Z  INFO 7 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+churn-api  | 2026-03-13T22:03:29.342Z  INFO 7 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.50]
+churn-api  | 2026-03-13T22:03:29.412Z  INFO 7 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+churn-api  | 2026-03-13T22:03:29.417Z  INFO 7 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4496 ms
+churn-api  | 2026-03-13T22:03:30.693Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Starting...
+churn-api  | 2026-03-13T22:03:31.021Z  INFO 7 --- [           main] com.zaxxer.hikari.pool.HikariPool        : ChurnInsightPool - Added connection com.mysql.cj.jdbc.ConnectionImpl@5b59c3d
+churn-api  | 2026-03-13T22:03:31.023Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Start completed.
+churn-api  | 2026-03-13T22:03:31.092Z  INFO 7 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://db:3306/churn_db?allowPublicKeyRetrieval=true&useSSL=false&rewriteBatchedStatements=true (MySQL 8.0)
+churn-api  | 2026-03-13T22:03:31.242Z  INFO 7 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table `churn_db`.`flyway_schema_history` does not exist yet
+churn-api  | 2026-03-13T22:03:31.247Z  INFO 7 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 6 migrations (execution time 00:00.029s)
+churn-api  | 2026-03-13T22:03:31.281Z  INFO 7 --- [           main] org.flywaydb.core.Flyway                 : All configured schemas are empty; baseline operation skipped. A baseline or migration script with a lower version than the baseline version may execute if available. Check the Schemas parameter if this is not intended.
+churn-api  | 2026-03-13T22:03:31.289Z  INFO 7 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table `churn_db`.`flyway_schema_history` ...
+churn-api  | 2026-03-13T22:03:31.417Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `churn_db`: << Empty Schema >>
+churn-api  | 2026-03-13T22:03:31.434Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `churn_db` to version "1 - init churn history"
+churn-api  | 2026-03-13T22:03:31.546Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `churn_db` to version "2 - add engineered features"
+churn-api  | 2026-03-13T22:03:31.560Z  WARN 7 --- [           main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: PROCEDURE churn_db.AddColumnIfNotExists does not exist (SQL State: 42000 - Error Code: 1305)
+churn-api  | 2026-03-13T22:03:32.082Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `churn_db` to version "3 - add search indexes"
+churn-api  | 2026-03-13T22:03:32.604Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `churn_db` to version "4 - create retention actions"
+churn-api  | 2026-03-13T22:03:32.704Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `churn_db` to version "5 - create retention outcomes"
+churn-api  | 2026-03-13T22:03:32.814Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `churn_db` to version "6 - create retention indexes"
+churn-api  | 2026-03-13T22:03:33.068Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 6 migrations to schema `churn_db`, now at version v6 (execution time 00:01.407s)
+churn-api  | 2026-03-13T22:03:33.174Z  INFO 7 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+churn-api  | 2026-03-13T22:03:33.230Z  INFO 7 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.39.Final
+churn-api  | 2026-03-13T22:03:33.283Z  INFO 7 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+churn-api  | 2026-03-13T22:03:33.620Z  INFO 7 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+churn-api  | 2026-03-13T22:03:33.686Z  WARN 7 --- [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+churn-api  | 2026-03-13T22:03:33.701Z  INFO 7 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+churn-api  | 	Database JDBC URL [Connecting through datasource 'HikariDataSource (ChurnInsightPool)']
+churn-api  | 	Database driver: undefined/unknown
+churn-api  | 	Database version: 8.0.45
+churn-api  | 	Autocommit mode: undefined/unknown
+churn-api  | 	Isolation level: undefined/unknown
+churn-api  | 	Minimum pool size: undefined/unknown
+churn-api  | 	Maximum pool size: undefined/unknown
+churn-api  | 2026-03-13T22:03:34.776Z  INFO 7 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+churn-api  | 2026-03-13T22:03:35.064Z  INFO 7 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+churn-api  | 2026-03-13T22:03:35.118Z  INFO 7 --- [           main] c.h.d.c.infra.config.BeanConfiguration   : Contrato da API carregado - Endpoint: POST /predict | Modelo: Spotify Churn Model v1.0
+churn-api  | 2026-03-13T22:03:35.127Z  INFO 7 --- [           main] c.h.d.c.a.s.ApiContractQueryService      : ✅ ApiContractQueryService inicializado - Modelo: Spotify Churn Model v1.0
+churn-api  | 2026-03-13T22:03:35.161Z  INFO 7 --- [           main] .c.i.a.o.p.a.JdbcBatchPersistenceAdapter : 🚀 JdbcBatchPersistenceAdapter: 24 threads, chunk size 5000
+churn-api  | 2026-03-13T22:03:35.207Z  WARN 7 --- [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'batchProcessingService' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/com/hackathon/databeats/churninsight/application/service/BatchProcessingService.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'inferencePort' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Unsatisfied dependency expressed through method 'inferencePort' parameter 0: Error creating bean with name 'modelMetadata' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 2026-03-13T22:03:35.207Z  INFO 7 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+churn-api  | 2026-03-13T22:03:35.212Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Shutdown initiated...
+churn-api  | 2026-03-13T22:03:35.218Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Shutdown completed.
+churn-api  | 2026-03-13T22:03:35.221Z  INFO 7 --- [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+churn-api  | 2026-03-13T22:03:35.252Z  INFO 7 --- [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+churn-api  | 
+churn-api  | Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+churn-api  | 2026-03-13T22:03:35.278Z ERROR 7 --- [           main] o.s.boot.SpringApplication               : Application run failed
+churn-api  | 
+churn-api  | org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'batchProcessingService' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/com/hackathon/databeats/churninsight/application/service/BatchProcessingService.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'inferencePort' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Unsatisfied dependency expressed through method 'inferencePort' parameter 0: Error creating bean with name 'modelMetadata' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:240) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1395) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1232) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1228) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1194) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1130) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:990) ~[spring-context-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627) ~[spring-context-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:752) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at com.hackathon.databeats.churninsight.ChurnInsightApplication.main(ChurnInsightApplication.java:31) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[na:na]
+churn-api  | 	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+churn-api  | 	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106) ~[app.jar:0.0.1-SNAPSHOT]
+churn-api  | 	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[app.jar:0.0.1-SNAPSHOT]
+churn-api  | 	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[app.jar:0.0.1-SNAPSHOT]
+churn-api  | Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'inferencePort' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Unsatisfied dependency expressed through method 'inferencePort' parameter 0: Error creating bean with name 'modelMetadata' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:546) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1375) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1205) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1708) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1653) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	... 26 common frames omitted
+churn-api  | Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'modelMetadata' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:657) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:489) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1375) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1205) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1770) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1653) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	... 39 common frames omitted
+churn-api  | Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:200) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiateWithFactoryMethod(SimpleInstantiationStrategy.java:89) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:169) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	... 53 common frames omitted
+churn-api  | Caused by: com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException.from(UnrecognizedPropertyException.java:61) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.DeserializationContext.handleUnknownProperty(DeserializationContext.java:1180) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.std.StdDeserializer.handleUnknownProperty(StdDeserializer.java:2244) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownProperty(BeanDeserializerBase.java:1823) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownVanilla(BeanDeserializerBase.java:1801) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.BeanDeserializer.vanillaDeserialize(BeanDeserializer.java:308) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:169) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:342) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:4979) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3932) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.hackathon.databeats.churninsight.infra.config.BeanConfiguration.modelMetadata(BeanConfiguration.java:72) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at com.hackathon.databeats.churninsight.infra.config.BeanConfiguration$$SpringCGLIB$$0.CGLIB$modelMetadata$2(<generated>) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at com.hackathon.databeats.churninsight.infra.config.BeanConfiguration$$SpringCGLIB$$FastClass$$1.invoke(<generated>) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:258) ~[spring-core-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:400) ~[spring-context-6.2.15.jar!/:6.2.15]
+churn-api  | 	at com.hackathon.databeats.churninsight.infra.config.BeanConfiguration$$SpringCGLIB$$0.modelMetadata(<generated>) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[na:na]
+churn-api  | 	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+churn-api  | 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:172) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	... 56 common frames omitted
+churn-api  | 
+churn-api  | 
+churn-api  |   .   ____          _            __ _ _
+churn-api  |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+churn-api  | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+churn-api  |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+churn-api  |   '  |____| .__|_| |_|_| |_\__, | / / / /
+churn-api  |  =========|_|==============|___/=/_/_/_/
+churn-api  | 
+churn-api  |  :: Spring Boot ::                (v3.5.9)
+churn-api  | 
+churn-api  | 2026-03-13T22:03:38.900Z  INFO 7 --- [           main] c.h.d.c.ChurnInsightApplication          : Starting ChurnInsightApplication v0.0.1-SNAPSHOT using Java 21.0.10 with PID 7 (/app/app.jar started by appuser in /app)
+churn-api  | 2026-03-13T22:03:38.905Z  INFO 7 --- [           main] c.h.d.c.ChurnInsightApplication          : No active profile set, falling back to 1 default profile: "default"
+churn-api  | 2026-03-13T22:03:41.509Z  INFO 7 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+churn-api  | 2026-03-13T22:03:41.610Z  INFO 7 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 86 ms. Found 4 JPA repository interfaces.
+churn-api  | 2026-03-13T22:03:43.080Z  INFO 7 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 10808 (http)
+churn-api  | 2026-03-13T22:03:43.110Z  INFO 7 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+churn-api  | 2026-03-13T22:03:43.111Z  INFO 7 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.50]
+churn-api  | 2026-03-13T22:03:43.201Z  INFO 7 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+churn-api  | 2026-03-13T22:03:43.205Z  INFO 7 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4206 ms
+churn-api  | 2026-03-13T22:03:44.291Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Starting...
+churn-api  | 2026-03-13T22:03:44.495Z  INFO 7 --- [           main] com.zaxxer.hikari.pool.HikariPool        : ChurnInsightPool - Added connection com.mysql.cj.jdbc.ConnectionImpl@4e61a863
+churn-api  | 2026-03-13T22:03:44.498Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Start completed.
+churn-api  | 2026-03-13T22:03:44.579Z  INFO 7 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://db:3306/churn_db?allowPublicKeyRetrieval=true&useSSL=false&rewriteBatchedStatements=true (MySQL 8.0)
+churn-api  | 2026-03-13T22:03:44.785Z  INFO 7 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 6 migrations (execution time 00:00.048s)
+churn-api  | 2026-03-13T22:03:44.808Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `churn_db`: 6
+churn-api  | 2026-03-13T22:03:44.813Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Schema `churn_db` is up to date. No migration necessary.
+churn-api  | 2026-03-13T22:03:44.924Z  INFO 7 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+churn-api  | 2026-03-13T22:03:44.970Z  INFO 7 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.39.Final
+churn-api  | 2026-03-13T22:03:45.003Z  INFO 7 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+churn-api  | 2026-03-13T22:03:45.258Z  INFO 7 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+churn-api  | 2026-03-13T22:03:45.320Z  WARN 7 --- [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+churn-api  | 2026-03-13T22:03:45.332Z  INFO 7 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+churn-api  | 	Database JDBC URL [Connecting through datasource 'HikariDataSource (ChurnInsightPool)']
+churn-api  | 	Database driver: undefined/unknown
+churn-api  | 	Database version: 8.0.45
+churn-api  | 	Autocommit mode: undefined/unknown
+churn-api  | 	Isolation level: undefined/unknown
+churn-api  | 	Minimum pool size: undefined/unknown
+churn-api  | 	Maximum pool size: undefined/unknown
+churn-api  | 2026-03-13T22:03:46.501Z  INFO 7 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+churn-api  | 2026-03-13T22:03:46.728Z  INFO 7 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+churn-api  | 2026-03-13T22:03:46.781Z  INFO 7 --- [           main] c.h.d.c.infra.config.BeanConfiguration   : Contrato da API carregado - Endpoint: POST /predict | Modelo: Spotify Churn Model v1.0
+churn-api  | 2026-03-13T22:03:46.791Z  INFO 7 --- [           main] c.h.d.c.a.s.ApiContractQueryService      : ✅ ApiContractQueryService inicializado - Modelo: Spotify Churn Model v1.0
+churn-api  | 2026-03-13T22:03:46.820Z  INFO 7 --- [           main] .c.i.a.o.p.a.JdbcBatchPersistenceAdapter : 🚀 JdbcBatchPersistenceAdapter: 24 threads, chunk size 5000
+churn-api  | 2026-03-13T22:03:46.861Z  WARN 7 --- [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'batchProcessingService' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/com/hackathon/databeats/churninsight/application/service/BatchProcessingService.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'inferencePort' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Unsatisfied dependency expressed through method 'inferencePort' parameter 0: Error creating bean with name 'modelMetadata' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 2026-03-13T22:03:46.861Z  INFO 7 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+churn-api  | 2026-03-13T22:03:46.865Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Shutdown initiated...
+churn-api  | 2026-03-13T22:03:46.874Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Shutdown completed.
+churn-api  | 2026-03-13T22:03:46.878Z  INFO 7 --- [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+churn-api  | 2026-03-13T22:03:46.902Z  INFO 7 --- [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+churn-api  | 
+churn-api  | Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+churn-api  | 2026-03-13T22:03:46.929Z ERROR 7 --- [           main] o.s.boot.SpringApplication               : Application run failed
+churn-api  | 
+churn-api  | org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'batchProcessingService' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/com/hackathon/databeats/churninsight/application/service/BatchProcessingService.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'inferencePort' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Unsatisfied dependency expressed through method 'inferencePort' parameter 0: Error creating bean with name 'modelMetadata' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:240) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1395) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1232) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1228) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1194) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1130) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:990) ~[spring-context-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627) ~[spring-context-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:752) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at com.hackathon.databeats.churninsight.ChurnInsightApplication.main(ChurnInsightApplication.java:31) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[na:na]
+churn-api  | 	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+churn-api  | 	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106) ~[app.jar:0.0.1-SNAPSHOT]
+churn-api  | 	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[app.jar:0.0.1-SNAPSHOT]
+churn-api  | 	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[app.jar:0.0.1-SNAPSHOT]
+churn-api  | Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'inferencePort' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Unsatisfied dependency expressed through method 'inferencePort' parameter 0: Error creating bean with name 'modelMetadata' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:546) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1375) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1205) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1708) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1653) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	... 26 common frames omitted
+churn-api  | Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'modelMetadata' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:657) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:489) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1375) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1205) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1770) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1653) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	... 39 common frames omitted
+churn-api  | Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:200) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiateWithFactoryMethod(SimpleInstantiationStrategy.java:89) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:169) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	... 53 common frames omitted
+churn-api  | Caused by: com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException.from(UnrecognizedPropertyException.java:61) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.DeserializationContext.handleUnknownProperty(DeserializationContext.java:1180) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.std.StdDeserializer.handleUnknownProperty(StdDeserializer.java:2244) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownProperty(BeanDeserializerBase.java:1823) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownVanilla(BeanDeserializerBase.java:1801) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.BeanDeserializer.vanillaDeserialize(BeanDeserializer.java:308) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:169) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:342) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:4979) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3932) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.hackathon.databeats.churninsight.infra.config.BeanConfiguration.modelMetadata(BeanConfiguration.java:72) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at com.hackathon.databeats.churninsight.infra.config.BeanConfiguration$$SpringCGLIB$$0.CGLIB$modelMetadata$2(<generated>) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at com.hackathon.databeats.churninsight.infra.config.BeanConfiguration$$SpringCGLIB$$FastClass$$1.invoke(<generated>) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:258) ~[spring-core-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:400) ~[spring-context-6.2.15.jar!/:6.2.15]
+churn-api  | 	at com.hackathon.databeats.churninsight.infra.config.BeanConfiguration$$SpringCGLIB$$0.modelMetadata(<generated>) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[na:na]
+churn-api  | 	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+churn-api  | 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:172) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	... 56 common frames omitted
+churn-api  | 
+churn-api  | 
+churn-api  |   .   ____          _            __ _ _
+churn-api  |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+churn-api  | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+churn-api  |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+churn-api  |   '  |____| .__|_| |_|_| |_\__, | / / / /
+churn-api  |  =========|_|==============|___/=/_/_/_/
+churn-api  | 
+churn-api  |  :: Spring Boot ::                (v3.5.9)
+churn-api  | 
+churn-api  | 2026-03-13T22:03:51.388Z  INFO 7 --- [           main] c.h.d.c.ChurnInsightApplication          : Starting ChurnInsightApplication v0.0.1-SNAPSHOT using Java 21.0.10 with PID 7 (/app/app.jar started by appuser in /app)
+churn-api  | 2026-03-13T22:03:51.392Z  INFO 7 --- [           main] c.h.d.c.ChurnInsightApplication          : No active profile set, falling back to 1 default profile: "default"
+churn-api  | 2026-03-13T22:03:54.070Z  INFO 7 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+churn-api  | 2026-03-13T22:03:54.183Z  INFO 7 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 96 ms. Found 4 JPA repository interfaces.
+churn-api  | 2026-03-13T22:03:55.713Z  INFO 7 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 10808 (http)
+churn-api  | 2026-03-13T22:03:55.746Z  INFO 7 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+churn-api  | 2026-03-13T22:03:55.747Z  INFO 7 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.50]
+churn-api  | 2026-03-13T22:03:55.816Z  INFO 7 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+churn-api  | 2026-03-13T22:03:55.818Z  INFO 7 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4337 ms
+churn-api  | 2026-03-13T22:03:57.019Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Starting...
+churn-api  | 2026-03-13T22:03:57.230Z  INFO 7 --- [           main] com.zaxxer.hikari.pool.HikariPool        : ChurnInsightPool - Added connection com.mysql.cj.jdbc.ConnectionImpl@69c1ea07
+churn-api  | 2026-03-13T22:03:57.232Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Start completed.
+churn-api  | 2026-03-13T22:03:57.296Z  INFO 7 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://db:3306/churn_db?allowPublicKeyRetrieval=true&useSSL=false&rewriteBatchedStatements=true (MySQL 8.0)
+churn-api  | 2026-03-13T22:03:57.470Z  INFO 7 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 6 migrations (execution time 00:00.051s)
+churn-api  | 2026-03-13T22:03:57.496Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `churn_db`: 6
+churn-api  | 2026-03-13T22:03:57.500Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Schema `churn_db` is up to date. No migration necessary.
+churn-api  | 2026-03-13T22:03:57.620Z  INFO 7 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+churn-api  | 2026-03-13T22:03:57.681Z  INFO 7 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.39.Final
+churn-api  | 2026-03-13T22:03:57.715Z  INFO 7 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+churn-api  | 2026-03-13T22:03:57.999Z  INFO 7 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+churn-api  | 2026-03-13T22:03:58.062Z  WARN 7 --- [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+churn-api  | 2026-03-13T22:03:58.077Z  INFO 7 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+churn-api  | 	Database JDBC URL [Connecting through datasource 'HikariDataSource (ChurnInsightPool)']
+churn-api  | 	Database driver: undefined/unknown
+churn-api  | 	Database version: 8.0.45
+churn-api  | 	Autocommit mode: undefined/unknown
+churn-api  | 	Isolation level: undefined/unknown
+churn-api  | 	Minimum pool size: undefined/unknown
+churn-api  | 	Maximum pool size: undefined/unknown
+churn-api  | 2026-03-13T22:03:59.145Z  INFO 7 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+churn-api  | 2026-03-13T22:03:59.433Z  INFO 7 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+churn-api  | 2026-03-13T22:03:59.504Z  INFO 7 --- [           main] c.h.d.c.infra.config.BeanConfiguration   : Contrato da API carregado - Endpoint: POST /predict | Modelo: Spotify Churn Model v1.0
+churn-api  | 2026-03-13T22:03:59.516Z  INFO 7 --- [           main] c.h.d.c.a.s.ApiContractQueryService      : ✅ ApiContractQueryService inicializado - Modelo: Spotify Churn Model v1.0
+churn-api  | 2026-03-13T22:03:59.550Z  INFO 7 --- [           main] .c.i.a.o.p.a.JdbcBatchPersistenceAdapter : 🚀 JdbcBatchPersistenceAdapter: 24 threads, chunk size 5000
+churn-api  | 2026-03-13T22:03:59.609Z  WARN 7 --- [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'batchProcessingService' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/com/hackathon/databeats/churninsight/application/service/BatchProcessingService.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'inferencePort' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Unsatisfied dependency expressed through method 'inferencePort' parameter 0: Error creating bean with name 'modelMetadata' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 2026-03-13T22:03:59.609Z  INFO 7 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+churn-api  | 2026-03-13T22:03:59.616Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Shutdown initiated...
+churn-api  | 2026-03-13T22:03:59.630Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Shutdown completed.
+churn-api  | 2026-03-13T22:03:59.636Z  INFO 7 --- [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+churn-api  | 2026-03-13T22:03:59.677Z  INFO 7 --- [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+churn-api  | 
+churn-api  | Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+churn-api  | 2026-03-13T22:03:59.714Z ERROR 7 --- [           main] o.s.boot.SpringApplication               : Application run failed
+churn-api  | 
+churn-api  | org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'batchProcessingService' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/com/hackathon/databeats/churninsight/application/service/BatchProcessingService.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'inferencePort' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Unsatisfied dependency expressed through method 'inferencePort' parameter 0: Error creating bean with name 'modelMetadata' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:240) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1395) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1232) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1228) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1194) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1130) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:990) ~[spring-context-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627) ~[spring-context-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:752) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at com.hackathon.databeats.churninsight.ChurnInsightApplication.main(ChurnInsightApplication.java:31) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[na:na]
+churn-api  | 	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+churn-api  | 	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106) ~[app.jar:0.0.1-SNAPSHOT]
+churn-api  | 	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[app.jar:0.0.1-SNAPSHOT]
+churn-api  | 	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[app.jar:0.0.1-SNAPSHOT]
+churn-api  | Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'inferencePort' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Unsatisfied dependency expressed through method 'inferencePort' parameter 0: Error creating bean with name 'modelMetadata' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:546) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1375) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1205) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1708) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1653) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	... 26 common frames omitted
+churn-api  | Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'modelMetadata' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:657) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:489) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1375) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1205) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1770) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1653) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	... 39 common frames omitted
+churn-api  | Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:200) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiateWithFactoryMethod(SimpleInstantiationStrategy.java:89) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:169) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	... 53 common frames omitted
+churn-api  | Caused by: com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException.from(UnrecognizedPropertyException.java:61) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.DeserializationContext.handleUnknownProperty(DeserializationContext.java:1180) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.std.StdDeserializer.handleUnknownProperty(StdDeserializer.java:2244) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownProperty(BeanDeserializerBase.java:1823) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownVanilla(BeanDeserializerBase.java:1801) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.BeanDeserializer.vanillaDeserialize(BeanDeserializer.java:308) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:169) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:342) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:4979) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3932) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.hackathon.databeats.churninsight.infra.config.BeanConfiguration.modelMetadata(BeanConfiguration.java:72) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at com.hackathon.databeats.churninsight.infra.config.BeanConfiguration$$SpringCGLIB$$0.CGLIB$modelMetadata$2(<generated>) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at com.hackathon.databeats.churninsight.infra.config.BeanConfiguration$$SpringCGLIB$$FastClass$$1.invoke(<generated>) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:258) ~[spring-core-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:400) ~[spring-context-6.2.15.jar!/:6.2.15]
+churn-api  | 	at com.hackathon.databeats.churninsight.infra.config.BeanConfiguration$$SpringCGLIB$$0.modelMetadata(<generated>) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[na:na]
+churn-api  | 	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+churn-api  | 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:172) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	... 56 common frames omitted
+churn-api  | 
+churn-api  | 
+churn-api  |   .   ____          _            __ _ _
+churn-api  |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+churn-api  | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+churn-api  |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+churn-api  |   '  |____| .__|_| |_|_| |_\__, | / / / /
+churn-api  |  =========|_|==============|___/=/_/_/_/
+churn-api  | 
+churn-api  |  :: Spring Boot ::                (v3.5.9)
+churn-api  | 
+churn-api  | 2026-03-13T22:04:03.815Z  INFO 7 --- [           main] c.h.d.c.ChurnInsightApplication          : Starting ChurnInsightApplication v0.0.1-SNAPSHOT using Java 21.0.10 with PID 7 (/app/app.jar started by appuser in /app)
+churn-api  | 2026-03-13T22:04:03.821Z  INFO 7 --- [           main] c.h.d.c.ChurnInsightApplication          : No active profile set, falling back to 1 default profile: "default"
+churn-api  | 2026-03-13T22:04:06.052Z  INFO 7 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+churn-api  | 2026-03-13T22:04:06.166Z  INFO 7 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 98 ms. Found 4 JPA repository interfaces.
+churn-api  | 2026-03-13T22:04:07.523Z  INFO 7 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 10808 (http)
+churn-api  | 2026-03-13T22:04:07.547Z  INFO 7 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+churn-api  | 2026-03-13T22:04:07.548Z  INFO 7 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.50]
+churn-api  | 2026-03-13T22:04:07.608Z  INFO 7 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+churn-api  | 2026-03-13T22:04:07.613Z  INFO 7 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3695 ms
+churn-api  | 2026-03-13T22:04:08.551Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Starting...
+churn-api  | 2026-03-13T22:04:08.805Z  INFO 7 --- [           main] com.zaxxer.hikari.pool.HikariPool        : ChurnInsightPool - Added connection com.mysql.cj.jdbc.ConnectionImpl@4e61a863
+churn-api  | 2026-03-13T22:04:08.807Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Start completed.
+churn-api  | 2026-03-13T22:04:08.864Z  INFO 7 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://db:3306/churn_db?allowPublicKeyRetrieval=true&useSSL=false&rewriteBatchedStatements=true (MySQL 8.0)
+churn-api  | 2026-03-13T22:04:09.038Z  INFO 7 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 6 migrations (execution time 00:00.050s)
+churn-api  | 2026-03-13T22:04:09.062Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `churn_db`: 6
+churn-api  | 2026-03-13T22:04:09.067Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Schema `churn_db` is up to date. No migration necessary.
+churn-api  | 2026-03-13T22:04:09.184Z  INFO 7 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+churn-api  | 2026-03-13T22:04:09.241Z  INFO 7 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.39.Final
+churn-api  | 2026-03-13T22:04:09.277Z  INFO 7 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+churn-api  | 2026-03-13T22:04:09.557Z  INFO 7 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+churn-api  | 2026-03-13T22:04:09.636Z  WARN 7 --- [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+churn-api  | 2026-03-13T22:04:09.658Z  INFO 7 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+churn-api  | 	Database JDBC URL [Connecting through datasource 'HikariDataSource (ChurnInsightPool)']
+churn-api  | 	Database driver: undefined/unknown
+churn-api  | 	Database version: 8.0.45
+churn-api  | 	Autocommit mode: undefined/unknown
+churn-api  | 	Isolation level: undefined/unknown
+churn-api  | 	Minimum pool size: undefined/unknown
+churn-api  | 	Maximum pool size: undefined/unknown
+churn-api  | 2026-03-13T22:04:10.939Z  INFO 7 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+churn-api  | 2026-03-13T22:04:11.177Z  INFO 7 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+churn-api  | 2026-03-13T22:04:11.229Z  INFO 7 --- [           main] c.h.d.c.infra.config.BeanConfiguration   : Contrato da API carregado - Endpoint: POST /predict | Modelo: Spotify Churn Model v1.0
+churn-api  | 2026-03-13T22:04:11.237Z  INFO 7 --- [           main] c.h.d.c.a.s.ApiContractQueryService      : ✅ ApiContractQueryService inicializado - Modelo: Spotify Churn Model v1.0
+churn-api  | 2026-03-13T22:04:11.265Z  INFO 7 --- [           main] .c.i.a.o.p.a.JdbcBatchPersistenceAdapter : 🚀 JdbcBatchPersistenceAdapter: 24 threads, chunk size 5000
+churn-api  | 2026-03-13T22:04:11.307Z  WARN 7 --- [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'batchProcessingService' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/com/hackathon/databeats/churninsight/application/service/BatchProcessingService.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'inferencePort' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Unsatisfied dependency expressed through method 'inferencePort' parameter 0: Error creating bean with name 'modelMetadata' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 2026-03-13T22:04:11.307Z  INFO 7 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+churn-api  | 2026-03-13T22:04:11.311Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Shutdown initiated...
+churn-api  | 2026-03-13T22:04:11.320Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Shutdown completed.
+churn-api  | 2026-03-13T22:04:11.323Z  INFO 7 --- [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+churn-api  | 2026-03-13T22:04:11.350Z  INFO 7 --- [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+churn-api  | 
+churn-api  | Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+churn-api  | 2026-03-13T22:04:11.369Z ERROR 7 --- [           main] o.s.boot.SpringApplication               : Application run failed
+churn-api  | 
+churn-api  | org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'batchProcessingService' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/com/hackathon/databeats/churninsight/application/service/BatchProcessingService.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'inferencePort' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Unsatisfied dependency expressed through method 'inferencePort' parameter 0: Error creating bean with name 'modelMetadata' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:240) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1395) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1232) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1228) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1194) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1130) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:990) ~[spring-context-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627) ~[spring-context-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:752) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at com.hackathon.databeats.churninsight.ChurnInsightApplication.main(ChurnInsightApplication.java:31) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[na:na]
+churn-api  | 	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+churn-api  | 	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106) ~[app.jar:0.0.1-SNAPSHOT]
+churn-api  | 	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[app.jar:0.0.1-SNAPSHOT]
+churn-api  | 	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[app.jar:0.0.1-SNAPSHOT]
+churn-api  | Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'inferencePort' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Unsatisfied dependency expressed through method 'inferencePort' parameter 0: Error creating bean with name 'modelMetadata' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:546) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1375) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1205) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1708) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1653) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	... 26 common frames omitted
+churn-api  | Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'modelMetadata' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:657) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:489) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1375) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1205) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1770) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1653) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	... 39 common frames omitted
+churn-api  | Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:200) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiateWithFactoryMethod(SimpleInstantiationStrategy.java:89) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:169) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	... 53 common frames omitted
+churn-api  | Caused by: com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException.from(UnrecognizedPropertyException.java:61) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.DeserializationContext.handleUnknownProperty(DeserializationContext.java:1180) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.std.StdDeserializer.handleUnknownProperty(StdDeserializer.java:2244) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownProperty(BeanDeserializerBase.java:1823) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownVanilla(BeanDeserializerBase.java:1801) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.BeanDeserializer.vanillaDeserialize(BeanDeserializer.java:308) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:169) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:342) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:4979) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3932) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.hackathon.databeats.churninsight.infra.config.BeanConfiguration.modelMetadata(BeanConfiguration.java:72) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at com.hackathon.databeats.churninsight.infra.config.BeanConfiguration$$SpringCGLIB$$0.CGLIB$modelMetadata$2(<generated>) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at com.hackathon.databeats.churninsight.infra.config.BeanConfiguration$$SpringCGLIB$$FastClass$$1.invoke(<generated>) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:258) ~[spring-core-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:400) ~[spring-context-6.2.15.jar!/:6.2.15]
+churn-api  | 	at com.hackathon.databeats.churninsight.infra.config.BeanConfiguration$$SpringCGLIB$$0.modelMetadata(<generated>) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[na:na]
+churn-api  | 	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+churn-api  | 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:172) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	... 56 common frames omitted
+churn-api  | 
+churn-api  | 
+churn-api  |   .   ____          _            __ _ _
+churn-api  |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+churn-api  | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+churn-api  |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+churn-api  |   '  |____| .__|_| |_|_| |_\__, | / / / /
+churn-api  |  =========|_|==============|___/=/_/_/_/
+churn-api  | 
+churn-api  |  :: Spring Boot ::                (v3.5.9)
+churn-api  | 
+churn-api  | 2026-03-13T22:04:14.960Z  INFO 7 --- [           main] c.h.d.c.ChurnInsightApplication          : Starting ChurnInsightApplication v0.0.1-SNAPSHOT using Java 21.0.10 with PID 7 (/app/app.jar started by appuser in /app)
+churn-api  | 2026-03-13T22:04:14.965Z  INFO 7 --- [           main] c.h.d.c.ChurnInsightApplication          : No active profile set, falling back to 1 default profile: "default"
+churn-api  | 2026-03-13T22:04:17.198Z  INFO 7 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+churn-api  | 2026-03-13T22:04:17.303Z  INFO 7 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 89 ms. Found 4 JPA repository interfaces.
+churn-api  | 2026-03-13T22:04:18.713Z  INFO 7 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 10808 (http)
+churn-api  | 2026-03-13T22:04:18.738Z  INFO 7 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+churn-api  | 2026-03-13T22:04:18.739Z  INFO 7 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.50]
+churn-api  | 2026-03-13T22:04:18.796Z  INFO 7 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+churn-api  | 2026-03-13T22:04:18.799Z  INFO 7 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3736 ms
+churn-api  | 2026-03-13T22:04:19.840Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Starting...
+churn-api  | 2026-03-13T22:04:20.050Z  INFO 7 --- [           main] com.zaxxer.hikari.pool.HikariPool        : ChurnInsightPool - Added connection com.mysql.cj.jdbc.ConnectionImpl@47eae91d
+churn-api  | 2026-03-13T22:04:20.052Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Start completed.
+churn-api  | 2026-03-13T22:04:20.113Z  INFO 7 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://db:3306/churn_db?allowPublicKeyRetrieval=true&useSSL=false&rewriteBatchedStatements=true (MySQL 8.0)
+churn-api  | 2026-03-13T22:04:20.369Z  INFO 7 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 6 migrations (execution time 00:00.090s)
+churn-api  | 2026-03-13T22:04:20.403Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `churn_db`: 6
+churn-api  | 2026-03-13T22:04:20.414Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Schema `churn_db` is up to date. No migration necessary.
+churn-api  | 2026-03-13T22:04:20.631Z  INFO 7 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+churn-api  | 2026-03-13T22:04:20.692Z  INFO 7 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.39.Final
+churn-api  | 2026-03-13T22:04:20.726Z  INFO 7 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+churn-api  | 2026-03-13T22:04:20.986Z  INFO 7 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+churn-api  | 2026-03-13T22:04:21.046Z  WARN 7 --- [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+churn-api  | 2026-03-13T22:04:21.059Z  INFO 7 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+churn-api  | 	Database JDBC URL [Connecting through datasource 'HikariDataSource (ChurnInsightPool)']
+churn-api  | 	Database driver: undefined/unknown
+churn-api  | 	Database version: 8.0.45
+churn-api  | 	Autocommit mode: undefined/unknown
+churn-api  | 	Isolation level: undefined/unknown
+churn-api  | 	Minimum pool size: undefined/unknown
+churn-api  | 	Maximum pool size: undefined/unknown
+churn-api  | 2026-03-13T22:04:22.090Z  INFO 7 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+churn-api  | 2026-03-13T22:04:22.422Z  INFO 7 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+churn-api  | 2026-03-13T22:04:22.476Z  INFO 7 --- [           main] c.h.d.c.infra.config.BeanConfiguration   : Contrato da API carregado - Endpoint: POST /predict | Modelo: Spotify Churn Model v1.0
+churn-api  | 2026-03-13T22:04:22.484Z  INFO 7 --- [           main] c.h.d.c.a.s.ApiContractQueryService      : ✅ ApiContractQueryService inicializado - Modelo: Spotify Churn Model v1.0
+churn-api  | 2026-03-13T22:04:22.519Z  INFO 7 --- [           main] .c.i.a.o.p.a.JdbcBatchPersistenceAdapter : 🚀 JdbcBatchPersistenceAdapter: 24 threads, chunk size 5000
+churn-api  | 2026-03-13T22:04:22.569Z  WARN 7 --- [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'batchProcessingService' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/com/hackathon/databeats/churninsight/application/service/BatchProcessingService.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'inferencePort' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Unsatisfied dependency expressed through method 'inferencePort' parameter 0: Error creating bean with name 'modelMetadata' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 2026-03-13T22:04:22.570Z  INFO 7 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+churn-api  | 2026-03-13T22:04:22.574Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Shutdown initiated...
+churn-api  | 2026-03-13T22:04:22.582Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Shutdown completed.
+churn-api  | 2026-03-13T22:04:22.586Z  INFO 7 --- [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+churn-api  | 2026-03-13T22:04:22.613Z  INFO 7 --- [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+churn-api  | 
+churn-api  | Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+churn-api  | 2026-03-13T22:04:22.643Z ERROR 7 --- [           main] o.s.boot.SpringApplication               : Application run failed
+churn-api  | 
+churn-api  | org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'batchProcessingService' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/com/hackathon/databeats/churninsight/application/service/BatchProcessingService.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'inferencePort' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Unsatisfied dependency expressed through method 'inferencePort' parameter 0: Error creating bean with name 'modelMetadata' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:240) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1395) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1232) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1228) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1194) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1130) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:990) ~[spring-context-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627) ~[spring-context-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:752) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350) ~[spring-boot-3.5.9.jar!/:3.5.9]
+churn-api  | 	at com.hackathon.databeats.churninsight.ChurnInsightApplication.main(ChurnInsightApplication.java:31) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[na:na]
+churn-api  | 	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+churn-api  | 	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106) ~[app.jar:0.0.1-SNAPSHOT]
+churn-api  | 	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[app.jar:0.0.1-SNAPSHOT]
+churn-api  | 	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[app.jar:0.0.1-SNAPSHOT]
+churn-api  | Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'inferencePort' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Unsatisfied dependency expressed through method 'inferencePort' parameter 0: Error creating bean with name 'modelMetadata' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:546) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1375) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1205) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1708) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1653) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	... 26 common frames omitted
+churn-api  | Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'modelMetadata' defined in class path resource [com/hackathon/databeats/churninsight/infra/config/BeanConfiguration.class]: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:657) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:489) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1375) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1205) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1770) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1653) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	... 39 common frames omitted
+churn-api  | Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.hackathon.databeats.churninsight.infra.util.ModelMetadata]: Factory method 'modelMetadata' threw exception with message: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:200) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiateWithFactoryMethod(SimpleInstantiationStrategy.java:89) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:169) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	... 53 common frames omitted
+churn-api  | Caused by: com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field "features" (class com.hackathon.databeats.churninsight.infra.util.ModelMetadata), not marked as ignorable (13 known properties: "name", "numeric_features", "model_type", "recall", "threshold_otimo", "auc_roc", "version", "accuracy", "categorical_features", "precision", "threshold", "export_date", "f1_score"])
+churn-api  |  at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 6, column: 16] (through reference chain: com.hackathon.databeats.churninsight.infra.util.ModelMetadata["features"])
+churn-api  | 	at com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException.from(UnrecognizedPropertyException.java:61) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.DeserializationContext.handleUnknownProperty(DeserializationContext.java:1180) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.std.StdDeserializer.handleUnknownProperty(StdDeserializer.java:2244) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownProperty(BeanDeserializerBase.java:1823) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownVanilla(BeanDeserializerBase.java:1801) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.BeanDeserializer.vanillaDeserialize(BeanDeserializer.java:308) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:169) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:342) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:4979) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3932) ~[jackson-databind-2.19.4.jar!/:2.19.4]
+churn-api  | 	at com.hackathon.databeats.churninsight.infra.config.BeanConfiguration.modelMetadata(BeanConfiguration.java:72) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at com.hackathon.databeats.churninsight.infra.config.BeanConfiguration$$SpringCGLIB$$0.CGLIB$modelMetadata$2(<generated>) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at com.hackathon.databeats.churninsight.infra.config.BeanConfiguration$$SpringCGLIB$$FastClass$$1.invoke(<generated>) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:258) ~[spring-core-6.2.15.jar!/:6.2.15]
+churn-api  | 	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:400) ~[spring-context-6.2.15.jar!/:6.2.15]
+churn-api  | 	at com.hackathon.databeats.churninsight.infra.config.BeanConfiguration$$SpringCGLIB$$0.modelMetadata(<generated>) ~[!/:0.0.1-SNAPSHOT]
+churn-api  | 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source) ~[na:na]
+churn-api  | 	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+churn-api  | 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:172) ~[spring-beans-6.2.15.jar!/:6.2.15]
+churn-api  | 	... 56 common frames omitted
+churn-api  | 
+churn-api  | 
+churn-api  |   .   ____          _            __ _ _
+churn-api  |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+churn-api  | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+churn-api  |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+churn-api  |   '  |____| .__|_| |_|_| |_\__, | / / / /
+churn-api  |  =========|_|==============|___/=/_/_/_/
+churn-api  | 
+churn-api  |  :: Spring Boot ::                (v3.5.9)
+churn-api  | 
+churn-api  | 2026-03-13T22:04:26.469Z  INFO 7 --- [           main] c.h.d.c.ChurnInsightApplication          : Starting ChurnInsightApplication v0.0.1-SNAPSHOT using Java 21.0.10 with PID 7 (/app/app.jar started by appuser in /app)
+churn-api  | 2026-03-13T22:04:26.473Z  INFO 7 --- [           main] c.h.d.c.ChurnInsightApplication          : No active profile set, falling back to 1 default profile: "default"
+churn-api  | 2026-03-13T22:04:28.753Z  INFO 7 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+churn-api  | 2026-03-13T22:04:28.849Z  INFO 7 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 80 ms. Found 4 JPA repository interfaces.

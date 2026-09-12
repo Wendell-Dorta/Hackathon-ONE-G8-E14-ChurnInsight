@@ -1,0 +1,56 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Apresentacao Executiva</title><style>body{font-family:Segoe UI,Arial,sans-serif;max-width:940px;margin:36px auto;line-height:1.55;color:#0b1320}h1{font-size:34px;color:#0a2647;border-bottom:3px solid #2c74b3;padding-bottom:10px}h2{color:#144272}pre{background:#f2f7ff;border:1px solid #d7e4fb;padding:12px;border-radius:8px}code{font-family:Consolas,monospace}</style></head><body><h1 id="churninsight-resumo-executivo-de-execucao-local">ChurnInsight - Resumo Executivo de Execucao Local</h1>
+<p>Data: 2026-03-12<br />
+Equipe: DataBeats<br />
+Escopo: Validacao operacional da stack local (frontend + backend + banco)</p>
+<h2 id="objetivo">Objetivo</h2>
+<p>Garantir que a plataforma ChurnInsight possa ser executada localmente de forma estavel, reproduzivel e pronta para demonstracao.</p>
+<h2 id="cenario-inicial">Cenario Inicial</h2>
+<p>Durante a tentativa de subida da stack, foram encontrados bloqueios de ambiente que impediam a execucao completa:</p>
+<ol>
+<li>Variaveis obrigatorias ausentes por falta de arquivo .env.</li>
+<li>Inconsistencia na construcao do backend via compose em alguns cenarios.</li>
+<li>Conflito de porta 3306 com MySQL local ja ativo na maquina.</li>
+</ol>
+<h2 id="acoes-executadas">Acoes Executadas</h2>
+<ol>
+<li>Padronizacao de ambiente local via .env.</li>
+<li>Ajuste no Docker Compose para build local explicito do backend.</li>
+<li>Parametrizacao da porta do banco para evitar colisao no host.</li>
+<li>Revalidacao ponta a ponta com health checks e chamada real de predicao.</li>
+</ol>
+<h2 id="resultado-tecnico">Resultado Tecnico</h2>
+<p>Status final: OPERACIONAL</p>
+<ul>
+<li>Frontend online: http://localhost:3000</li>
+<li>API online: http://localhost:10808</li>
+<li>Swagger online: http://localhost:10808/swagger-ui/index.html</li>
+<li>Banco local da stack: localhost:3307</li>
+<li>Health dos servicos: healthy</li>
+<li>Endpoint /predict: resposta valida</li>
+</ul>
+<h2 id="evidencias-de-sucesso">Evidencias de Sucesso</h2>
+<ol>
+<li>Build backend: sucesso.</li>
+<li>Build frontend: sucesso.</li>
+<li>Docker compose: stack principal em execucao estavel.</li>
+<li>Health API: status UP.</li>
+<li>Teste funcional real de predicao: aprovado.</li>
+</ol>
+<h2 id="impacto-para-a-entrega">Impacto para a Entrega</h2>
+<ol>
+<li>Ambiente local agora reproduzivel para todo o time.</li>
+<li>Reducao de risco para demo e avaliacao final.</li>
+<li>Menor tempo de setup para onboard de novos colaboradores.</li>
+<li>Base pronta para evolucao de features sem bloqueio de infraestrutura.</li>
+</ol>
+<h2 id="recomendacoes">Recomendacoes</h2>
+<ol>
+<li>Manter o arquivo .env de desenvolvimento como referencia interna do time.</li>
+<li>Preservar a parametrizacao de portas no compose para evitar conflitos entre maquinas.</li>
+<li>Usar o comando oficial abaixo para subida:</li>
+</ol>
+<pre><code class="language-bash">docker compose up -d --build db app frontend
+</code></pre>
+<h2 id="conclusao">Conclusao</h2>
+<p>A operacao local do ChurnInsight foi estabilizada com sucesso. A stack esta pronta para demonstracao, validacao funcional e continuidade do desenvolvimento.</p>
+</body></html>

@@ -1,0 +1,96 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Relatorio Execucao Local</title><style>body{font-family:Segoe UI,Arial,sans-serif;max-width:900px;margin:40px auto;line-height:1.55;color:#111} h1,h2,h3{color:#0f2740} h1{border-bottom:2px solid #0f2740;padding-bottom:8px} pre{background:#f5f7fb;padding:12px;border-radius:8px;overflow:auto} code{font-family:Consolas,monospace} hr{border:none;border-top:1px solid #d8dee9}</style></head><body><h1 id="churninsight">ChurnInsight</h1>
+<h2 id="relatorio-oficial-de-execucao-local">Relatorio Oficial de Execucao Local</h2>
+<p>Equipe: DataBeats<br />
+Projeto: ChurnInsight API + Frontend<br />
+Data: 2026-03-12<br />
+Ambiente validado: Windows 11, PowerShell, Docker Desktop</p>
+<hr />
+<h2 id="indice">Indice</h2>
+<ol>
+<li><a href="#resumo-executivo">Resumo Executivo</a></li>
+<li><a href="#problemas-identificados">Problemas Identificados</a></li>
+<li><a href="#correcoes-aplicadas">Correcoes Aplicadas</a></li>
+<li><a href="#validacoes-executadas">Validacoes Executadas</a></li>
+<li><a href="#como-reproduzir">Como Reproduzir</a></li>
+<li><a href="#comandos-operacionais">Comandos Operacionais</a></li>
+<li><a href="#endpoints-finais">Endpoints Finais</a></li>
+<li><a href="#conclusao">Conclusao</a></li>
+</ol>
+<hr />
+<h2 id="resumo-executivo">Resumo Executivo</h2>
+<p>A stack foi estabilizada para execucao local completa (frontend, backend e banco), com health checks positivos e teste real de predicao executado com sucesso.</p>
+<h2 id="problemas-identificados">Problemas Identificados</h2>
+<ol>
+<li>Ausencia do arquivo <code>.env</code> na raiz.</li>
+<li>Docker Engine indisponivel no inicio da verificacao.</li>
+<li>Conflito de porta <code>3306</code> com MySQL local (<code>mysqld</code>).</li>
+<li>Servico <code>app</code> no compose principal sem bloco de <code>build</code>.</li>
+</ol>
+<h2 id="correcoes-aplicadas">Correcoes Aplicadas</h2>
+<ol>
+<li>Criacao de <code>.env</code> de desenvolvimento com variaveis obrigatorias.</li>
+<li>Definicao de <code>DB_PORT=3307</code> para evitar conflito local de porta.</li>
+<li>Ajuste de <code>docker-compose.yml</code> no servico <code>db</code>:</li>
+</ol>
+<pre><code class="language-yaml">ports:
+  - &quot;${DB_PORT:-3306}:3306&quot;
+</code></pre>
+<ol start="4">
+<li>Ajuste de <code>docker-compose.yml</code> no servico <code>app</code> para build local:</li>
+</ol>
+<pre><code class="language-yaml">build:
+  context: .
+  dockerfile: Dockerfile
+</code></pre>
+<h2 id="validacoes-executadas">Validacoes Executadas</h2>
+<ol>
+<li>Build backend local: <code>./mvnw.cmd -DskipTests package</code> (sucesso).</li>
+<li>Build frontend local: <code>npm run build</code> (sucesso).</li>
+<li>Subida da stack: <code>docker compose up -d --build db app frontend</code>.</li>
+<li>Status dos servicos: <code>db</code>, <code>app</code> e <code>frontend</code> em <code>healthy</code>.</li>
+<li>Frontend: <code>http://localhost:3000</code> (HTTP 200).</li>
+<li>Health API: <code>http://localhost:10808/actuator/health</code> (<code>status: UP</code>).</li>
+<li>Swagger: <code>http://localhost:10808/swagger-ui/index.html</code> (HTTP 200).</li>
+<li>Predicao real em <code>/predict</code> com payload de exemplo (resposta valida).</li>
+</ol>
+<h2 id="como-reproduzir">Como Reproduzir</h2>
+<ol>
+<li>Garantir Docker Desktop em execucao.</li>
+<li>Manter o arquivo <code>.env</code> na raiz com configuracao de desenvolvimento.</li>
+<li>Executar:</li>
+</ol>
+<pre><code class="language-bash">docker compose up -d --build db app frontend
+</code></pre>
+<ol start="4">
+<li>Validar:</li>
+</ol>
+<pre><code class="language-bash">docker compose ps
+</code></pre>
+<h2 id="comandos-operacionais">Comandos Operacionais</h2>
+<p>Subir stack:</p>
+<pre><code class="language-bash">docker compose up -d --build db app frontend
+</code></pre>
+<p>Logs da API:</p>
+<pre><code class="language-bash">docker compose logs -f app
+</code></pre>
+<p>Parar stack:</p>
+<pre><code class="language-bash">docker compose down
+</code></pre>
+<p>Resetar dados locais (remove volume DB):</p>
+<pre><code class="language-bash">docker compose down -v
+</code></pre>
+<h2 id="endpoints-finais">Endpoints Finais</h2>
+<ul>
+<li>Frontend: <code>http://localhost:3000</code></li>
+<li>API: <code>http://localhost:10808</code></li>
+<li>Swagger: <code>http://localhost:10808/swagger-ui/index.html</code></li>
+<li>MySQL exposto no host: <code>localhost:3307</code></li>
+</ul>
+<h2 id="conclusao">Conclusao</h2>
+<p>A execucao local foi normalizada com ajustes de ambiente e compose, mantendo o comportamento esperado da arquitetura oficial do projeto.</p>
+<p>Documentacao complementar:</p>
+<ul>
+<li><code>RESUMO_EXECUCAO_LOCAL.md</code></li>
+<li><code>EXECUCAO_LOCAL_RELATORIO.md</code></li>
+</ul>
+</body></html>

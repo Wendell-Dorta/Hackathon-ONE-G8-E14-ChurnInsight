@@ -1,0 +1,13 @@
+{
+  "user_id": "user-high-risk-001",
+  "gender": "Male",
+  "age": 22,
+  "country": "BR",
+  "subscription_type": "Free",
+  "listening_time": 120.0,
+  "songs_played_per_day": 3,
+  "skip_rate": 0.75,
+  "ads_listened_per_week": 25,
+  "device_type": "Mobile",
+  "offline_listening": false
+}

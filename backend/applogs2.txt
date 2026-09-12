@@ -1,0 +1,126 @@
+churn-api  | 
+churn-api  |   .   ____          _            __ _ _
+churn-api  |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+churn-api  | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+churn-api  |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+churn-api  |   '  |____| .__|_| |_|_| |_\__, | / / / /
+churn-api  |  =========|_|==============|___/=/_/_/_/
+churn-api  | 
+churn-api  |  :: Spring Boot ::                (v3.5.9)
+churn-api  | 
+churn-api  | 2026-03-13T22:19:12.223Z  INFO 7 --- [           main] c.h.d.c.ChurnInsightApplication          : Starting ChurnInsightApplication v0.0.1-SNAPSHOT using Java 21.0.10 with PID 7 (/app/app.jar started by appuser in /app)
+churn-api  | 2026-03-13T22:19:12.228Z  INFO 7 --- [           main] c.h.d.c.ChurnInsightApplication          : No active profile set, falling back to 1 default profile: "default"
+churn-api  | 2026-03-13T22:19:14.570Z  INFO 7 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+churn-api  | 2026-03-13T22:19:14.666Z  INFO 7 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 82 ms. Found 4 JPA repository interfaces.
+churn-api  | 2026-03-13T22:19:16.326Z  INFO 7 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 10808 (http)
+churn-api  | 2026-03-13T22:19:16.352Z  INFO 7 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+churn-api  | 2026-03-13T22:19:16.353Z  INFO 7 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.50]
+churn-api  | 2026-03-13T22:19:16.417Z  INFO 7 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+churn-api  | 2026-03-13T22:19:16.420Z  INFO 7 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4091 ms
+churn-api  | 2026-03-13T22:19:17.356Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Starting...
+churn-api  | 2026-03-13T22:19:17.599Z  INFO 7 --- [           main] com.zaxxer.hikari.pool.HikariPool        : ChurnInsightPool - Added connection com.mysql.cj.jdbc.ConnectionImpl@3cf06a01
+churn-api  | 2026-03-13T22:19:17.602Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Start completed.
+churn-api  | 2026-03-13T22:19:17.688Z  INFO 7 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://db:3306/churn_db?allowPublicKeyRetrieval=true&useSSL=false&rewriteBatchedStatements=true (MySQL 8.0)
+churn-api  | 2026-03-13T22:19:17.848Z  INFO 7 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table `churn_db`.`flyway_schema_history` does not exist yet
+churn-api  | 2026-03-13T22:19:17.853Z  INFO 7 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 6 migrations (execution time 00:00.037s)
+churn-api  | 2026-03-13T22:19:17.883Z  INFO 7 --- [           main] org.flywaydb.core.Flyway                 : All configured schemas are empty; baseline operation skipped. A baseline or migration script with a lower version than the baseline version may execute if available. Check the Schemas parameter if this is not intended.
+churn-api  | 2026-03-13T22:19:17.889Z  INFO 7 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table `churn_db`.`flyway_schema_history` ...
+churn-api  | 2026-03-13T22:19:18.024Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `churn_db`: << Empty Schema >>
+churn-api  | 2026-03-13T22:19:18.045Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `churn_db` to version "1 - init churn history"
+churn-api  | 2026-03-13T22:19:18.148Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `churn_db` to version "2 - add engineered features"
+churn-api  | 2026-03-13T22:19:18.164Z  WARN 7 --- [           main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: PROCEDURE churn_db.AddColumnIfNotExists does not exist (SQL State: 42000 - Error Code: 1305)
+churn-api  | 2026-03-13T22:19:18.727Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `churn_db` to version "3 - add search indexes"
+churn-api  | 2026-03-13T22:19:19.296Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `churn_db` to version "4 - create retention actions"
+churn-api  | 2026-03-13T22:19:19.388Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `churn_db` to version "5 - create retention outcomes"
+churn-api  | 2026-03-13T22:19:19.484Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema `churn_db` to version "6 - create retention indexes"
+churn-api  | 2026-03-13T22:19:19.736Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 6 migrations to schema `churn_db`, now at version v6 (execution time 00:01.472s)
+churn-api  | 2026-03-13T22:19:19.844Z  INFO 7 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+churn-api  | 2026-03-13T22:19:19.901Z  INFO 7 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.39.Final
+churn-api  | 2026-03-13T22:19:19.944Z  INFO 7 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+churn-api  | 2026-03-13T22:19:20.213Z  INFO 7 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+churn-api  | 2026-03-13T22:19:20.275Z  WARN 7 --- [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+churn-api  | 2026-03-13T22:19:20.291Z  INFO 7 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+churn-api  | 	Database JDBC URL [Connecting through datasource 'HikariDataSource (ChurnInsightPool)']
+churn-api  | 	Database driver: undefined/unknown
+churn-api  | 	Database version: 8.0.45
+churn-api  | 	Autocommit mode: undefined/unknown
+churn-api  | 	Isolation level: undefined/unknown
+churn-api  | 	Minimum pool size: undefined/unknown
+churn-api  | 	Maximum pool size: undefined/unknown
+churn-api  | 2026-03-13T22:19:21.530Z  INFO 7 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+churn-api  | 2026-03-13T22:19:21.813Z  INFO 7 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+churn-api  | 2026-03-13T22:19:21.875Z  INFO 7 --- [           main] c.h.d.c.infra.config.BeanConfiguration   : Contrato da API carregado - Endpoint: POST /predict | Modelo: Spotify Churn Model v1.0
+churn-api  | 2026-03-13T22:19:21.883Z  INFO 7 --- [           main] c.h.d.c.a.s.ApiContractQueryService      : ✅ ApiContractQueryService inicializado - Modelo: Spotify Churn Model v1.0
+churn-api  | 2026-03-13T22:19:21.911Z  INFO 7 --- [           main] .c.i.a.o.p.a.JdbcBatchPersistenceAdapter : 🚀 JdbcBatchPersistenceAdapter: 24 threads, chunk size 5000
+churn-api  | 2026-03-13T22:19:21.952Z  INFO 7 --- [           main] c.h.d.c.infra.config.BeanConfiguration   : Metadados do modelo carregados - Nome: null v2.0 | Threshold: 0.11009792238473892
+churn-api  | 2026-03-13T22:19:21.969Z  INFO 7 --- [           main] c.h.d.c.infra.config.BeanConfiguration   : Carregando modelo ONNX para inferência...
+churn-api  | 2026-03-13T22:19:22.165Z  INFO 7 --- [           main] c.h.d.c.i.a.o.i.OnnxRuntimeAdapter       : ✅ Modelo ONNX carregado com sucesso. INVERT_CLASSES=true
+churn-api  | 2026-03-13T22:19:22.182Z  INFO 7 --- [           main] c.h.d.c.a.s.BatchProcessingService       : 🚀 BatchProcessingService TURBO - Batch: 10000 | Inference Threads: 10 | Max Records: 100000 | CPUs: 16
+churn-api  | 2026-03-13T22:19:22.516Z  INFO 7 --- [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+churn-api  | 2026-03-13T22:19:24.790Z  INFO 7 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 4 endpoints beneath base path '/actuator'
+churn-api  | 2026-03-13T22:19:24.879Z  INFO 7 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+churn-api  | 2026-03-13T22:19:25.653Z  INFO 7 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 10808 (http) with context path '/'
+churn-api  | 2026-03-13T22:19:25.685Z  INFO 7 --- [           main] c.h.d.c.ChurnInsightApplication          : Started ChurnInsightApplication in 14.281 seconds (process running for 17.301)
+churn-api  | 2026-03-13T22:19:25.813Z  WARN 7 --- [           main] o.s.core.events.SpringDocAppInitializer  : SpringDoc /v3/api-docs endpoint is enabled by default. To disable it in production, set the property 'springdoc.api-docs.enabled=false'
+churn-api  | 2026-03-13T22:19:25.813Z  WARN 7 --- [           main] o.s.core.events.SpringDocAppInitializer  : SpringDoc /swagger-ui.html endpoint is enabled by default. To disable it in production, set the property 'springdoc.swagger-ui.enabled=false'
+churn-api  | 2026-03-13T22:19:38.813Z  INFO 7 --- [omcat-handler-0] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+churn-api  | 2026-03-13T22:19:38.814Z  INFO 7 --- [omcat-handler-0] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+churn-api  | 2026-03-13T22:19:38.823Z  INFO 7 --- [omcat-handler-0] o.s.web.servlet.DispatcherServlet        : Completed initialization in 9 ms
+churn-api  | 
+churn-api  |   .   ____          _            __ _ _
+churn-api  |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+churn-api  | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+churn-api  |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+churn-api  |   '  |____| .__|_| |_|_| |_\__, | / / / /
+churn-api  |  =========|_|==============|___/=/_/_/_/
+churn-api  | 
+churn-api  |  :: Spring Boot ::                (v3.5.9)
+churn-api  | 
+churn-api  | 2026-03-13T22:21:40.867Z  INFO 7 --- [           main] c.h.d.c.ChurnInsightApplication          : Starting ChurnInsightApplication v0.0.1-SNAPSHOT using Java 21.0.10 with PID 7 (/app/app.jar started by appuser in /app)
+churn-api  | 2026-03-13T22:21:40.874Z  INFO 7 --- [           main] c.h.d.c.ChurnInsightApplication          : No active profile set, falling back to 1 default profile: "default"
+churn-api  | 2026-03-13T22:21:43.365Z  INFO 7 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+churn-api  | 2026-03-13T22:21:43.491Z  INFO 7 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 106 ms. Found 4 JPA repository interfaces.
+churn-api  | 2026-03-13T22:21:45.225Z  INFO 7 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 10808 (http)
+churn-api  | 2026-03-13T22:21:45.261Z  INFO 7 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+churn-api  | 2026-03-13T22:21:45.262Z  INFO 7 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.50]
+churn-api  | 2026-03-13T22:21:45.342Z  INFO 7 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+churn-api  | 2026-03-13T22:21:45.344Z  INFO 7 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4364 ms
+churn-api  | 2026-03-13T22:21:46.630Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Starting...
+churn-api  | 2026-03-13T22:21:47.197Z  INFO 7 --- [           main] com.zaxxer.hikari.pool.HikariPool        : ChurnInsightPool - Added connection com.mysql.cj.jdbc.ConnectionImpl@87220f1
+churn-api  | 2026-03-13T22:21:47.200Z  INFO 7 --- [           main] com.zaxxer.hikari.HikariDataSource       : ChurnInsightPool - Start completed.
+churn-api  | 2026-03-13T22:21:47.275Z  INFO 7 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://db:3306/churn_db?allowPublicKeyRetrieval=true&useSSL=false&rewriteBatchedStatements=true (MySQL 8.0)
+churn-api  | 2026-03-13T22:21:47.470Z  INFO 7 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 6 migrations (execution time 00:00.054s)
+churn-api  | 2026-03-13T22:21:47.495Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema `churn_db`: 6
+churn-api  | 2026-03-13T22:21:47.500Z  INFO 7 --- [           main] o.f.core.internal.command.DbMigrate      : Schema `churn_db` is up to date. No migration necessary.
+churn-api  | 2026-03-13T22:21:47.621Z  INFO 7 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+churn-api  | 2026-03-13T22:21:47.673Z  INFO 7 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.39.Final
+churn-api  | 2026-03-13T22:21:47.712Z  INFO 7 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+churn-api  | 2026-03-13T22:21:48.013Z  INFO 7 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+churn-api  | 2026-03-13T22:21:48.078Z  WARN 7 --- [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+churn-api  | 2026-03-13T22:21:48.093Z  INFO 7 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+churn-api  | 	Database JDBC URL [Connecting through datasource 'HikariDataSource (ChurnInsightPool)']
+churn-api  | 	Database driver: undefined/unknown
+churn-api  | 	Database version: 8.0.45
+churn-api  | 	Autocommit mode: undefined/unknown
+churn-api  | 	Isolation level: undefined/unknown
+churn-api  | 	Minimum pool size: undefined/unknown
+churn-api  | 	Maximum pool size: undefined/unknown
+churn-api  | 2026-03-13T22:21:49.259Z  INFO 7 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+churn-api  | 2026-03-13T22:21:49.531Z  INFO 7 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+churn-api  | 2026-03-13T22:21:49.581Z  INFO 7 --- [           main] c.h.d.c.infra.config.BeanConfiguration   : Contrato da API carregado - Endpoint: POST /predict | Modelo: Spotify Churn Model v1.0
+churn-api  | 2026-03-13T22:21:49.590Z  INFO 7 --- [           main] c.h.d.c.a.s.ApiContractQueryService      : ✅ ApiContractQueryService inicializado - Modelo: Spotify Churn Model v1.0
+churn-api  | 2026-03-13T22:21:49.624Z  INFO 7 --- [           main] .c.i.a.o.p.a.JdbcBatchPersistenceAdapter : 🚀 JdbcBatchPersistenceAdapter: 24 threads, chunk size 5000
+churn-api  | 2026-03-13T22:21:49.661Z  INFO 7 --- [           main] c.h.d.c.infra.config.BeanConfiguration   : Metadados do modelo carregados - Nome: null v2.0 | Threshold: 0.11009792238473892
+churn-api  | 2026-03-13T22:21:49.675Z  INFO 7 --- [           main] c.h.d.c.infra.config.BeanConfiguration   : Carregando modelo ONNX para inferência...
+churn-api  | 2026-03-13T22:21:49.853Z  INFO 7 --- [           main] c.h.d.c.i.a.o.i.OnnxRuntimeAdapter       : ✅ Modelo ONNX carregado com sucesso. INVERT_CLASSES=true
+churn-api  | 2026-03-13T22:21:49.868Z  INFO 7 --- [           main] c.h.d.c.a.s.BatchProcessingService       : 🚀 BatchProcessingService TURBO - Batch: 10000 | Inference Threads: 10 | Max Records: 100000 | CPUs: 16
+churn-api  | 2026-03-13T22:21:50.189Z  INFO 7 --- [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+churn-api  | 2026-03-13T22:21:52.768Z  INFO 7 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 4 endpoints beneath base path '/actuator'
+churn-api  | 2026-03-13T22:21:52.842Z  INFO 7 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+churn-api  | 2026-03-13T22:21:53.693Z  INFO 7 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 10808 (http) with context path '/'
+churn-api  | 2026-03-13T22:21:53.723Z  INFO 7 --- [           main] c.h.d.c.ChurnInsightApplication          : Started ChurnInsightApplication in 13.909 seconds (process running for 16.46)
+churn-api  | 2026-03-13T22:21:53.838Z  WARN 7 --- [           main] o.s.core.events.SpringDocAppInitializer  : SpringDoc /v3/api-docs endpoint is enabled by default. To disable it in production, set the property 'springdoc.api-docs.enabled=false'
+churn-api  | 2026-03-13T22:21:53.839Z  WARN 7 --- [           main] o.s.core.events.SpringDocAppInitializer  : SpringDoc /swagger-ui.html endpoint is enabled by default. To disable it in production, set the property 'springdoc.swagger-ui.enabled=false'
+churn-api  | 2026-03-13T22:22:07.588Z  INFO 7 --- [omcat-handler-0] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+churn-api  | 2026-03-13T22:22:07.588Z  INFO 7 --- [omcat-handler-0] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+churn-api  | 2026-03-13T22:22:07.592Z  INFO 7 --- [omcat-handler-0] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms

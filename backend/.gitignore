@@ -1,0 +1,55 @@
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+out/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+#Configuração e ambiente
+*.env
+
+# Diretório com segredos locais (não versionar)
+/secrets/
+
+# Docker Compose local (cada dev tem o seu)
+docker-compose-local*
+
+# Frontend (não versionar)
+frontend/node_modules/
+frontend/.env
+frontend/.env.*
+
+# Frontend (não versionar)
+frontend/node_modules/
+frontend/.env
+frontend/.env.*
+
+scripts/clientes_seed.csv

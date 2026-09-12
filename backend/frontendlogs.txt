@@ -1,0 +1,54 @@
+churn-frontend  | /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+churn-frontend  | /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+churn-frontend  | /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+churn-frontend  | 10-listen-on-ipv6-by-default.sh: info: Getting the checksum of /etc/nginx/conf.d/default.conf
+churn-frontend  | 10-listen-on-ipv6-by-default.sh: info: /etc/nginx/conf.d/default.conf differs from the packaged version
+churn-frontend  | /docker-entrypoint.sh: Sourcing /docker-entrypoint.d/15-local-resolvers.envsh
+churn-frontend  | /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+churn-frontend  | /docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+churn-frontend  | /docker-entrypoint.sh: Configuration complete; ready for start up
+churn-frontend  | 2026/03/13 22:22:08 [notice] 1#1: using the "epoll" event method
+churn-frontend  | 2026/03/13 22:22:08 [notice] 1#1: nginx/1.29.6
+churn-frontend  | 2026/03/13 22:22:08 [notice] 1#1: built by gcc 15.2.0 (Alpine 15.2.0) 
+churn-frontend  | 2026/03/13 22:22:08 [notice] 1#1: OS: Linux 6.6.87.2-microsoft-standard-WSL2
+churn-frontend  | 2026/03/13 22:22:08 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+churn-frontend  | 2026/03/13 22:22:08 [notice] 1#1: start worker processes
+churn-frontend  | 2026/03/13 22:22:08 [notice] 1#1: start worker process 29
+churn-frontend  | 2026/03/13 22:22:08 [notice] 1#1: start worker process 30
+churn-frontend  | 2026/03/13 22:22:08 [notice] 1#1: start worker process 31
+churn-frontend  | 2026/03/13 22:22:08 [notice] 1#1: start worker process 32
+churn-frontend  | 2026/03/13 22:22:08 [notice] 1#1: start worker process 33
+churn-frontend  | 2026/03/13 22:22:08 [notice] 1#1: start worker process 34
+churn-frontend  | 2026/03/13 22:22:08 [notice] 1#1: start worker process 35
+churn-frontend  | 2026/03/13 22:22:08 [notice] 1#1: start worker process 36
+churn-frontend  | 2026/03/13 22:22:08 [notice] 1#1: start worker process 37
+churn-frontend  | 2026/03/13 22:22:08 [notice] 1#1: start worker process 38
+churn-frontend  | 2026/03/13 22:22:08 [notice] 1#1: start worker process 39
+churn-frontend  | 2026/03/13 22:22:08 [notice] 1#1: start worker process 40
+churn-frontend  | 2026/03/13 22:22:08 [notice] 1#1: start worker process 41
+churn-frontend  | 2026/03/13 22:22:08 [notice] 1#1: start worker process 42
+churn-frontend  | 2026/03/13 22:22:08 [notice] 1#1: start worker process 43
+churn-frontend  | 2026/03/13 22:22:08 [notice] 1#1: start worker process 44
+churn-frontend  | 172.18.0.1 - - [13/Mar/2026:22:22:16 +0000] "GET / HTTP/1.1" 200 491 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+churn-frontend  | 172.18.0.1 - - [13/Mar/2026:22:22:16 +0000] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 200 491 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+churn-frontend  | 172.18.0.1 - - [13/Mar/2026:22:22:16 +0000] "GET /assets/index-BJM5jWFN.css HTTP/1.1" 200 482 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+churn-frontend  | 172.18.0.1 - - [13/Mar/2026:22:22:16 +0000] "GET /assets/index-CZnPO5Bk.js HTTP/1.1" 200 189386 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+churn-frontend  | 172.18.0.1 - - [13/Mar/2026:22:22:16 +0000] "GET /Spotify.png HTTP/1.1" 200 17582 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+churn-frontend  | 172.18.0.1 - admin [13/Mar/2026:22:22:16 +0000] "GET /api/actuator/health HTTP/1.1" 200 548 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+churn-frontend  | 172.18.0.1 - admin [13/Mar/2026:22:22:16 +0000] "GET /api/actuator/health HTTP/1.1" 200 548 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+churn-frontend  | 172.18.0.1 - admin [13/Mar/2026:22:22:16 +0000] "GET /api/clients?page=0&size=2000 HTTP/1.1" 200 177 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+churn-frontend  | 172.18.0.1 - admin [13/Mar/2026:22:22:17 +0000] "GET /api/clients?page=0&size=2000 HTTP/1.1" 200 177 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+churn-frontend  | 172.18.0.1 - admin [13/Mar/2026:22:22:17 +0000] "GET /api/dashboard/metrics HTTP/1.1" 200 265 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+churn-frontend  | 172.18.0.1 - admin [13/Mar/2026:22:22:17 +0000] "GET /api/dashboard/metrics HTTP/1.1" 200 265 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+churn-frontend  | 172.18.0.1 - admin [13/Mar/2026:22:22:17 +0000] "GET /api/dashboard/metrics HTTP/1.1" 200 265 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+churn-frontend  | 172.18.0.1 - - [13/Mar/2026:22:23:35 +0000] "GET / HTTP/1.1" 200 491 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+churn-frontend  | 172.18.0.1 - - [13/Mar/2026:22:23:35 +0000] "GET /assets/index-BJM5jWFN.css HTTP/1.1" 200 482 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+churn-frontend  | 172.18.0.1 - - [13/Mar/2026:22:23:35 +0000] "GET /assets/index-CZnPO5Bk.js HTTP/1.1" 200 189386 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+churn-frontend  | 172.18.0.1 - - [13/Mar/2026:22:23:35 +0000] "GET /Spotify.png HTTP/1.1" 200 17582 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+churn-frontend  | 172.18.0.1 - admin [13/Mar/2026:22:23:35 +0000] "GET /api/actuator/health HTTP/1.1" 200 548 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+churn-frontend  | 172.18.0.1 - admin [13/Mar/2026:22:23:35 +0000] "GET /api/actuator/health HTTP/1.1" 200 548 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+churn-frontend  | 172.18.0.1 - admin [13/Mar/2026:22:23:35 +0000] "GET /api/clients?page=0&size=2000 HTTP/1.1" 200 177 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+churn-frontend  | 172.18.0.1 - admin [13/Mar/2026:22:23:35 +0000] "GET /api/dashboard/metrics HTTP/1.1" 200 265 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+churn-frontend  | 172.18.0.1 - admin [13/Mar/2026:22:23:35 +0000] "GET /api/clients?page=0&size=2000 HTTP/1.1" 200 177 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+churn-frontend  | 172.18.0.1 - admin [13/Mar/2026:22:23:35 +0000] "GET /api/dashboard/metrics HTTP/1.1" 200 265 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
+churn-frontend  | 172.18.0.1 - admin [13/Mar/2026:22:23:35 +0000] "GET /api/dashboard/metrics HTTP/1.1" 200 265 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" "-"
